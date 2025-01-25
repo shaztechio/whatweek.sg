@@ -45,6 +45,19 @@ a {
   margin: 0.5em;
 }
 
+.install-pwa {
+  text-decoration: none;
+  font-size: 1em;
+  width: 150px;
+  height: 50px;
+  animation: slideInFromBottom 1s ease forwards;
+  margin: 2em;
+}
+
+.hidden {
+  display: none;
+}
+
 .oe-decorator {
   display: inline;
 }
@@ -64,9 +77,19 @@ a {
   to { transform: translateX(0); }
 }
 
+@keyframes slideInFromBottom {
+  from { transform: translateY(1000%); }
+  to { transform: translateY(0); }
+}
+
 /* responsive design elements */
 
 @media only screen and (max-device-width: 260px){
+
+  .install-pwa {
+    width: 50vw;
+    height: 5vh;
+    }
   .oe-decorator {
     display: none;
   }
