@@ -2,16 +2,22 @@ body {
   font-family: sans-serif;
   font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative; 
-  width: 100%; 
+
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  height: 100vh;          /* Take full viewport height */
+  width: 100vw;           /* Take full viewport width */
 }
 
 a {
   text-decoration: none;
 }
 
-.line {
+.container {
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -44,7 +50,7 @@ a {
 }
 
 @keyframes slideInFromTop {
-  from { transform: translateY(-150%); }
+  from { transform: translateY(-500%); }
   to { transform: translateY(0); }
 }
 
