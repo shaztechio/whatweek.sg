@@ -1,0 +1,91 @@
+body {
+  font-family: sans-serif;
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative; 
+  width: 100%; 
+}
+
+a {
+  text-decoration: none;
+}
+
+.line {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header .odd-or-even {
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.header {
+  font-size: 4em;
+  animation: slideInFromTop 1s ease forwards;
+  margin: 0;
+}
+
+.description {
+  font-size: 1.5em;
+  animation: slideInFromLeft 1s ease forwards;
+  margin: 0.5em;
+}
+
+.footer {
+  font-size: 0.75em;
+  animation: slideInFromRight 1s ease forwards;
+  margin: 0.5em;
+}
+
+.oe-decorator {
+  display: inline;
+}
+
+@keyframes slideInFromTop {
+  from { transform: translateY(-150%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* responsive design elements */
+
+@media only screen and (max-device-width: 260px){
+  .oe-decorator {
+    display: none;
+  }
+}
+
+@media only screen and (min-device-width: 480px){
+  .header {
+    font-size: 6em;
+  }
+  .description {
+    font-size: 2em;
+  }
+  .footer {
+    font-size: 1em;
+  }
+}
+
+@media only screen and (min-device-width: 768px){
+  .header {
+    font-size: 8em;
+  }
+  .description {
+    font-size: 3em;
+  }
+  .footer {
+    font-size: 1.5em;
+  }
+}
