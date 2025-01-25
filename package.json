@@ -1,0 +1,23 @@
+{
+  "name": "is-odd-or-even-week",
+  "version": "0.0.2",
+  "main": "index.html",
+  "scripts": {
+    "build": "mkdir -p build && cp index.* build/",
+    "precaprover:build": "npm run build",
+    "caprover:build": "cp ./captain-definition build/ && cp ./Dockerfile build/ && cd build && tar -czf caprover.tar --exclude caprover.tar .",
+    "precaprover:deploy": "npm run caprover:build",
+    "caprover:deploy": "npx caprover deploy -t build/caprover.tar -a joaquin-salvador"
+  },
+  "devDependencies": {
+    "caprover": "^2.2.3"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead"
+  ],
+  "engines": {
+    "node": "18.x"
+  },
+  "author": "Shazron Abdullah"
+}
