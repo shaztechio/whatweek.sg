@@ -6,8 +6,9 @@ body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center;     /* Center vertically */
-  height: 100vh;          /* Take full viewport height */
-  width: 100vw;           /* Take full viewport width */
+  height: 100vh;           /* Take full viewport height */
+  margin: 0;
+  padding: 0;
 }
 
 a {
@@ -62,6 +63,14 @@ a {
   display: inline;
 }
 
+.button-decorator {
+  display: inline;
+}
+
+button {
+  color: black;
+}
+
 @keyframes slideInFromTop {
   from { transform: translateY(-500%); }
   to { transform: translateY(0); }
@@ -84,18 +93,53 @@ a {
 
 /* responsive design elements */
 
-@media only screen and (max-device-width: 260px){
-
-  .install-pwa {
-    width: 50vw;
-    height: 5vh;
-    }
+@media only screen and (max-device-width: 105px){
+  .header {
+    font-size: 2em;
+  }
+  .description {
+    font-size: 0.75em;
+  }
+  .footer {
+    font-size: 0.5em;
+  }
   .oe-decorator {
     display: none;
   }
+
+  .install-pwa {
+    width: 75px;
+    height: 5vh;
+    }
 }
 
-@media only screen and (min-device-width: 480px){
+@media only screen and (max-device-width: 386px){
+  .header {
+    font-size: 4em;
+  }
+  .description {
+    font-size: 1em;
+  }
+  .footer {
+    font-size: 0.5em;
+  }
+  .oe-decorator {
+    display: none;
+  }
+
+  .install-pwa {
+    width: 100px;
+    height: 5vh;
+    }
+  .oe-decorator, .button-decorator, .description-decorator, .footer-decorator {
+    display: none;
+  }
+  .description {
+    text-transform: capitalize;
+  }
+}
+
+@media only screen and (max-device-width: 512px){
   .header {
     font-size: 6em;
   }
@@ -107,7 +151,7 @@ a {
   }
 }
 
-@media only screen and (min-device-width: 768px){
+/* @media only screen and (min-device-width: 768px){
   .header {
     font-size: 8em;
   }
@@ -117,4 +161,4 @@ a {
   .footer {
     font-size: 1.5em;
   }
-}
+} */
