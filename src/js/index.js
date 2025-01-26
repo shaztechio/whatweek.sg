@@ -4,6 +4,7 @@ import {
   updateTextContents,
   numberToEmoji,
   millisecondsUntilMidnight,
+  reportError,
 } from './utils';
 
 /**
@@ -11,7 +12,7 @@ import {
  *
  * @param {Date} testDate the date that is set to "today" (if set, it's for test purposes). Defaults to now.
  */
-function main(testDate) {
+export function main(testDate) {
   const today = testDate ?? new Date();
 
   const weekOffset = calculateWeekOffset();
@@ -38,7 +39,7 @@ function main(testDate) {
  * @param {number} timeoutId the timeout id for refreshing the page at midnight
  * @returns {number} the new timeoutId
  */
-function refresh(timeoutId) {
+export function refresh(timeoutId) {
   if (timeoutId) {
     clearTimeout(timeoutId);
   }

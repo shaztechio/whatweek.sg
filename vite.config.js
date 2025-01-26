@@ -3,6 +3,12 @@ import { resolve } from 'path';
 import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    coverage: {
+      include: ['src/js/*'],
+    },
+  },
   publicDir: 'public',
   root: './',
   build: {
