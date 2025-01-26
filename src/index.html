@@ -9,9 +9,7 @@
   <link rel="stylesheet" type="text/css" href="index.css" />
   <link rel="icon" type="image/png" href="index.png">
   <link rel="apple-touch-icon" href="index.png">
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.98/dist/add-to-homescreen.min.css"
+  <link rel="stylesheet" href="vendor/add-to-homescreen/add-to-homescreen.min.css"
   />
   <meta name="apple-mobile-web-app-title" content="Odd or Even">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,14 +34,14 @@
     </p>
     <button id="install-pwa" class="install-pwa"><span class="button-decorator">Install</span> ⚙️</button>
   </div>
-  <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.98/dist/add-to-homescreen.min.js"></script>
+  <script src="vendor/add-to-homescreen/add-to-homescreen.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       window.AddToHomeScreenInstance = window.AddToHomeScreen({
         appName: 'Odd or Even',
         appNameDisplay: 'standalone',
         appIconUrl: 'index.png',
-        assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.98/dist/assets/img/'
+        assetUrl: 'vendor/add-to-homescreen/assets/img/'
       })
 
       const ua = navigator.userAgent.toLowerCase()
