@@ -30,7 +30,7 @@
     "precaprover:build": "npm run build",
     "caprover:build": "cd dist && tar -czf ../caprover.tar .",
     "precaprover:deploy": "npm run caprover:build",
-    "caprover:deploy": "npx caprover deploy -t caprover.tar -a is-even-or-odd-week --default"
+    "caprover:deploy": "npx caprover deploy --tarFile caprover.tar -a is-even-or-odd-week --default"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

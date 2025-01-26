@@ -17,6 +17,7 @@ function main(testDate) {
   const weekOffset = calculateWeekOffset();
   const todayWeekNumber = getWeekNumber(today) - weekOffset;
   const isEven = todayWeekNumber % 2 === 0;
+
   const weekNumberNodeList = document.querySelectorAll('.week-number');
   updateTextContents(weekNumberNodeList, () => numberToEmoji(todayWeekNumber));
 
@@ -44,7 +45,8 @@ function refresh(timeoutId) {
   // update
   main();
   // update again at midnight
-  return setTimeout(main, millisecondsUntilMidnight());
+  const ms = millisecondsUntilMidnight();
+  return setTimeout(main, ms);
 }
 
 /**

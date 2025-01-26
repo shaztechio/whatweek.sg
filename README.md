@@ -7,4 +7,3 @@ These files are in the `public` folder:
 - captain-definition
 - Dockerfile
 - manifest.json
-

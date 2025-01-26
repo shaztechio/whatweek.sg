@@ -3,15 +3,8 @@
  *
  * @returns {Date} Jan 01 of the current year, UTC
  */
-export function getUTCFirstDateOfTheYear() {
-  const today = new Date();
-  return new Date(
-    Date.UTC(
-      today.getUTCFullYear(),
-      0 /* month, zero based */,
-      1 /* day of month */,
-    ),
-  );
+export function getFirstDateOfTheYear() {
+  return new Date(new Date().getFullYear(), 0, 1);
 }
 
 /**
@@ -25,11 +18,11 @@ export function getWeekNumber(aDate) {
   const clonedDate = new Date(aDate.getTime());
 
   // if day is 0 (Sunday) we make the value 7. Monday is 1, Tue is 2, ..., Sunday is 7.
-  const currentDayNumber = clonedDate.getUTCDay() || 7;
+  const currentDayNumber = clonedDate.getDay() || 7;
   // calculate the date of the nearest Thursday
-  clonedDate.setUTCDate(clonedDate.getUTCDate() + 4 - currentDayNumber);
+  clonedDate.setDate(clonedDate.getDate() + 4 - currentDayNumber);
 
-  const yearStart = getUTCFirstDateOfTheYear();
+  const yearStart = getFirstDateOfTheYear();
   const millisecondsInADay = 86400000;
 
   // calculate full weeks to nearest Thursday (add 1 to account for the current day)
@@ -74,7 +67,7 @@ export function reportError(err) {
  * See  https://en.wikipedia.org/wiki/Academic_year#:~:text=Term%201%20starts%20the%20day%20immediately%20after%20New%20Year%27s%20Day.%20If%20the%20first%20school%20day%20is%20a%20Thursday%20or%20a%20Friday%2C%20it%20is%20not%20counted%20as%20a%20school%20week.
  */
 export function calculateWeekOffset() {
-  const startOfTheYear = getUTCFirstDateOfTheYear(); // 1st Jan
+  const startOfTheYear = getFirstDateOfTheYear(); // 1st Jan
   startOfTheYear.setDate(startOfTheYear.getDate() + 1); // now set to next day 2nd Jan - when school starts
 
   // remember, 0 is Sun, 1 is Mon, and so on
