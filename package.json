@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "main": "index.html",
   "scripts": {
+    "dev": "vite serve src",
     "build": "mkdir -p build && cp -R src/* build/",
     "precaprover:build": "npm run build",
     "caprover:build": "cp ./captain-definition build/ && cp ./Dockerfile build/ && cd build && tar -czf caprover.tar --exclude caprover.tar .",
