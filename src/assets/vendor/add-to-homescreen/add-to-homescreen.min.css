@@ -9,8 +9,10 @@
   background-color: rgba(0, 0, 0, 0);
   z-index: 999999;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  font-family: "Roboto", sans-serif;
+  transition:
+    opacity 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  font-family: 'Roboto', sans-serif;
   color: #212121;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -169,7 +171,7 @@
   font-weight: 100;
 }
 
-[dir="rtl"]
+[dir='rtl']
   .adhs-container
   .adhs-modal
   .adhs-list
@@ -726,4 +728,3 @@
   right: 88px;
   animation: adhs-ios-chrome-bouncing-arrow-animation 1.5s infinite;
 }
-

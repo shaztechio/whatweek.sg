@@ -4,13 +4,13 @@ html {
 
 body {
   font-family: sans-serif;
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  position: relative; 
+  font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  position: relative;
 
   display: flex;
   justify-content: center; /* Center horizontally */
-  align-items: center;     /* Center vertically */
-  height: 100vh;           /* Take full viewport height */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Take full viewport height */
   margin: 0;
   padding: 0;
 }
@@ -76,28 +76,44 @@ button {
 }
 
 @keyframes slideInFromTop {
-  from { transform: translateY(-500%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(-500%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInFromLeft {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInFromRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInFromBottom {
-  from { transform: translateY(1000%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(1000%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* responsive design elements */
 
-@media only screen and (max-device-width: 105px){
+@media only screen and (max-device-width: 105px) {
   .header {
     font-size: 2em;
   }
@@ -114,10 +130,10 @@ button {
   .install-pwa {
     width: 75px;
     height: 5vh;
-    }
+  }
 }
 
-@media only screen and (max-device-width: 386px){
+@media only screen and (max-device-width: 386px) {
   .header {
     font-size: 4em;
   }
@@ -134,8 +150,11 @@ button {
   .install-pwa {
     width: 100px;
     height: 5vh;
-    }
-  .oe-decorator, .button-decorator, .description-decorator, .footer-decorator {
+  }
+  .oe-decorator,
+  .button-decorator,
+  .description-decorator,
+  .footer-decorator {
     display: none;
   }
   .description {
@@ -143,7 +162,7 @@ button {
   }
 }
 
-@media only screen and (max-device-width: 512px){
+@media only screen and (max-device-width: 512px) {
   .header {
     font-size: 6em;
   }

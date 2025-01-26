@@ -2,23 +2,51 @@
   "name": "is-odd-or-even-week",
   "version": "0.0.2",
   "main": "index.html",
+  "type": "module",
+  "keywords": [
+    "vanilla",
+    "javascript",
+    "template",
+    "boilerplate",
+    "boilerplate-template",
+    "postcss",
+    "eslint",
+    "prettier",
+    "scaffold",
+    "scaffold-template",
+    "vite",
+    "vitejs",
+    "vite-template",
+    "vitejs-template"
+  ],
   "scripts": {
-    "dev": "vite serve src",
-    "build": "mkdir -p build && cp -R src/* build/",
+    "dev": "vite --host --open",
+    "lint": "eslint --ext .js ./",
+    "lint:fix": "eslint --fix --ext .js ./",
+    "format": "prettier --write \"./**/*.{js,jsx,json,css}\"",
+    "build": "vite build",
+    "preview": "vite preview --open",
+    "buildpreview": "vite build && vite preview --open",
     "precaprover:build": "npm run build",
-    "caprover:build": "cp ./captain-definition build/ && cp ./Dockerfile build/ && cd build && tar -czf caprover.tar --exclude caprover.tar .",
+    "caprover:build": "cd dist && tar -czf ../caprover.tar .",
     "precaprover:deploy": "npm run caprover:build",
-    "caprover:deploy": "npx caprover deploy -t build/caprover.tar -a is-even-or-odd-week --default"
+    "caprover:deploy": "npx caprover deploy -t caprover.tar -a is-even-or-odd-week --default"
   },
   "devDependencies": {
-    "caprover": "^2.2.3"
+    "autoprefixer": "^10.4.20",
+    "cssnano": "^7.0.6",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "postcss": "^8.5.1",
+    "postcss-nesting": "^13.0.1",
+    "prettier": "^3.4.2",
+    "vite": "6.0.11",
+    "vite-plugin-eslint": "^1.8.1"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead"
-  ],
-  "engines": {
-    "node": "18.x"
-  },
-  "author": "Shazron Abdullah"
+  "dependencies": {
+    "the-new-css-reset": "^1.11.3"
+  }
 }

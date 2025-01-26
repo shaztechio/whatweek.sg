@@ -6,10 +6,10 @@
   <meta property="og:title" content="Is this an Odd or Even School Week?" />
   <meta property="og:description" content="Find out if today's date is an odd or even school week in Singapore." />
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Yin_and_Yang_symbol.svg/240px-Yin_and_Yang_symbol.svg.png" />
-  <link rel="stylesheet" type="text/css" href="index.css" />
+  <link rel="stylesheet" type="text/css" href="src/styles/index.css" />
   <link rel="icon" type="image/png" href="index.png" />
   <link rel="apple-touch-icon" href="index.png" />
-  <link rel="stylesheet" href="vendor/add-to-homescreen/add-to-homescreen.min.css" />
+  <link rel="stylesheet" href="src/assets/vendor/add-to-homescreen/add-to-homescreen.min.css" />
   <link rel="manifest" href="manifest.json" crossorigin="use-credentials" />
   <meta name="apple-mobile-web-app-title" content="Odd or Even" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,7 +35,7 @@
     </p>
     <button type="button" id="install-pwa" class="install-pwa"><span class="button-decorator">Install</span> ⚙️</button>
   </div>
-  <script src="vendor/add-to-homescreen/add-to-homescreen.min.js"></script>
+  <script type="module" src="src/assets/vendor/add-to-homescreen/add-to-homescreen.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       window.AddToHomeScreenInstance = window.AddToHomeScreen({
@@ -75,6 +75,6 @@
       }
     })
   </script>
-  <script type="text/javascript" src="index.js"></script>
+  <script type="module" src="src/js/index.js"></script>
 </body>
 </html>

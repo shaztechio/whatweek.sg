@@ -1,0 +1,69 @@
+import {
+  calculateWeekOffset,
+  getWeekNumber,
+  updateTextContents,
+  numberToEmoji,
+  millisecondsUntilMidnight,
+} from './utils';
+
+/**
+ * Main function.
+ *
+ * @param {Date} testDate the date that is set to "today" (if set, it's for test purposes). Defaults to now.
+ */
+function main(testDate) {
+  const today = testDate ?? new Date();
+
+  const weekOffset = calculateWeekOffset();
+  const todayWeekNumber = getWeekNumber(today) - weekOffset;
+  const isEven = todayWeekNumber % 2 === 0;
+  const weekNumberNodeList = document.querySelectorAll('.week-number');
+  updateTextContents(weekNumberNodeList, () => numberToEmoji(todayWeekNumber));
+
+  const allOddOrEvenNodeList = document.querySelectorAll('.odd-or-even');
+  updateTextContents(allOddOrEvenNodeList, () => {
+    return isEven ? 'even' : 'odd';
+  });
+
+  const oeDecoratorNodeList = document.querySelectorAll('.oe-decorator');
+  updateTextContents(oeDecoratorNodeList, () => {
+    return isEven ? '✌' : '☝️';
+  });
+}
+
+/**
+ * Refresh the page, and set a timer to refresh it again at midnight.
+ *
+ * @param {number} timeoutId the timeout id for refreshing the page at midnight
+ * @returns {number} the new timeoutId
+ */
+function refresh(timeoutId) {
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+  // update
+  main();
+  // update again at midnight
+  return setTimeout(main, millisecondsUntilMidnight());
+}
+
+/**
+ * Kick off
+ */
+try {
+  let timeoutId;
+
+  // when the page is visible, we refresh
+  document.addEventListener('visibilitychange', (e) => {
+    if (e.target.visibilityState === 'visible') {
+      timeoutId = refresh(timeoutId);
+    } else if (e.target.visibilityState === 'hidden') {
+      // do nothing
+    }
+  });
+
+  // run it at least once
+  timeoutId = refresh(timeoutId);
+} catch (err) {
+  reportError(err);
+}
