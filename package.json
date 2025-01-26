@@ -7,7 +7,7 @@
     "precaprover:build": "npm run build",
     "caprover:build": "cp ./captain-definition build/ && cp ./Dockerfile build/ && cd build && tar -czf caprover.tar --exclude caprover.tar .",
     "precaprover:deploy": "npm run caprover:build",
-    "caprover:deploy": "npx caprover deploy -t build/caprover.tar -a is-even-or-odd-week"
+    "caprover:deploy": "npx caprover deploy -t build/caprover.tar -a is-even-or-odd-week --default"
   },
   "devDependencies": {
     "caprover": "^2.2.3"

@@ -85,11 +85,19 @@ function numberToEmoji(num) {
     .join("");
 }
 
+function millisecondsUntilMidnight() {
+  const now = new Date()
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  return midnight - now
+}
+
 /**
  * Main function.
+ *
+ * @param {Date} testDate the date that is set to "today" (if set, it's for test purposes). Defaults to now.
  */
-function main () {
-  const today = new Date()
+function main (testDate) {
+  const today = testDate ?? new Date()
 
   const weekOffset = calculateWeekOffset()
   const todayWeekNumber = getWeekNumber(today) - weekOffset
@@ -106,13 +114,27 @@ function main () {
   updateTextContents(oeDecoratorNodeList, () => {
     return isEven? "✌" : "☝️"
   })
+
+  // we refresh again at midnight
+  return setTimeout((main), millisecondsUntilMidnight())
 }
 
 /**
  * Kick off
  */
 try {
+  // when the page is visible, we refresh
+  document.addEventListener("visibilitychange", () => {
+    if (e.target.visibilityState === 'visible') {
+      main() // refresh
+    } else if (e.target.visibilityState === 'hidden') {
+      // do nothing
+    }
+  })
+
+  // run it at least once
   main()
+
 } catch (err) {
   reportError(err)
 }
