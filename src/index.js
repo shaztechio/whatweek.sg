@@ -114,8 +114,15 @@ function main (testDate) {
   updateTextContents(oeDecoratorNodeList, () => {
     return isEven? "✌" : "☝️"
   })
+}
 
-  // we refresh again at midnight
+function refresh (timeoutId) {
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+  }
+  // update
+  main()
+  // update again at midnight
   return setTimeout((main), millisecondsUntilMidnight())
 }
 
@@ -123,18 +130,19 @@ function main (testDate) {
  * Kick off
  */
 try {
+  let timeoutId
+
   // when the page is visible, we refresh
   document.addEventListener("visibilitychange", () => {
     if (e.target.visibilityState === 'visible') {
-      main() // refresh
+      timeoutId = refresh(timeoutId)
     } else if (e.target.visibilityState === 'hidden') {
       // do nothing
     }
   })
 
   // run it at least once
-  main()
-
+  timeoutId = refresh(timeoutId)
 } catch (err) {
   reportError(err)
 }
