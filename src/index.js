@@ -116,6 +116,12 @@ function main (testDate) {
   })
 }
 
+/**
+ * Refresh the page, and set a timer to refresh it again at midnight.
+ * 
+ * @param {number} timeoutId the timeout id for refreshing the page at midnight
+ * @returns {number} the new timeoutId
+ */
 function refresh (timeoutId) {
   if (timeoutId) {
     clearTimeout(timeoutId)
