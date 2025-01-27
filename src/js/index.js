@@ -14,6 +14,7 @@ import {
  */
 export function main(testDate) {
   const today = testDate ?? new Date();
+  const todayDateString = today.toDateString('en-GB');
 
   const weekOffset = calculateWeekOffset();
   const todayWeekNumber = getWeekNumber(today) - weekOffset;
@@ -22,6 +23,9 @@ export function main(testDate) {
   const weekNumberNodeList = document.querySelectorAll('.week-number');
   updateTextContents(weekNumberNodeList, () => numberToEmoji(todayWeekNumber));
 
+  const todayDateNodeList = document.querySelectorAll('.today-date');
+  updateTextContents(todayDateNodeList, () => todayDateString);
+
   const allOddOrEvenNodeList = document.querySelectorAll('.odd-or-even');
   updateTextContents(allOddOrEvenNodeList, () => {
     return isEven ? 'even' : 'odd';
@@ -29,7 +33,7 @@ export function main(testDate) {
 
   const oeDecoratorNodeList = document.querySelectorAll('.oe-decorator');
   updateTextContents(oeDecoratorNodeList, () => {
-    return isEven ? '✌' : '☝️';
+    return isEven ? '\u270c' : '\u261d';
   });
 }
 
