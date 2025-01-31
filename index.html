@@ -36,46 +36,6 @@
     </p>
     <button type="button" id="install-pwa" class="install-pwa"><span class="button-decorator">Install</span> ⚙️</button>
   </div>
-  <script type="module" src="src/assets/vendor/add-to-homescreen/add-to-homescreen.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      window.AddToHomeScreenInstance = window.AddToHomeScreen({
-        appName: 'Odd or Even',
-        appNameDisplay: 'standalone',
-        appIconUrl: 'index.png',
-        assetUrl: './add-to-homescreen/img/',
-        displayOptions:{ showMobile: true, showDesktop: false }
-      })
-
-      const { 
-        isStandAlone,
-        isBrowserAndroidChrome,
-        isBrowserAndroidFacebook,
-        isBrowserAndroidFirefox,
-        isBrowserAndroidSamsung,
-        isBrowserIOSChrome,
-        isBrowserIOSFirefox,
-        isBrowserIOSInAppFacebook,
-        isBrowserIOSInAppInstagram,
-        isBrowserIOSInAppLinkedin,
-        isBrowserIOSInAppThreads,
-        isBrowserIOSInAppTwitter,
-        isBrowserIOSSafari
-      } = window.AddToHomeScreenInstance
-      const isInStandAloneMode = isStandAlone()
-      const isBrowserAndroid = isBrowserAndroidChrome() || isBrowserAndroidFacebook() || isBrowserAndroidFirefox() || isBrowserAndroidSamsung()
-      const isBrowserIOS = isBrowserIOSChrome() || isBrowserIOSFirefox() || isBrowserIOSInAppFacebook() || isBrowserIOSInAppInstagram() || isBrowserIOSInAppLinkedin() || isBrowserIOSInAppThreads() || isBrowserIOSInAppTwitter() || isBrowserIOSSafari()
-      const isDesktop = !isBrowserAndroid && !isBrowserIOS
-      if (isInStandAloneMode || isDesktop) {
-        document.getElementById('install-pwa').classList.add('hidden')
-      } else {
-        document.getElementById('install-pwa').classList.remove('hidden')
-        document.getElementById('install-pwa').addEventListener('click', function () {
-          window.AddToHomeScreenInstance.show('en');
-        });
-      }
-    })
-  </script>
   <script type="module" src="src/js/index.js"></script>
 </body>
 </html>

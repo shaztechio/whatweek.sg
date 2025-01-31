@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
 import {
   calculateWeekOffset,
   getWeekNumber,
@@ -5,6 +7,8 @@ import {
   numberToEmoji,
   reportError,
   refresh,
+  createAddToHomeScreenComponent,
+  getAddToHomeScreenProperties,
 } from './utils';
 
 /**
@@ -72,4 +76,34 @@ window.addEventListener('error', onError);
 /* v8 ignore stop */
 // //////////////////////////////////////////////
 
+/**
+ * Setup all the Add to Homescreen components.
+ */
+export function setupAddToHomeScreen() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const addToHomeScreenInstance = createAddToHomeScreenComponent({
+      appName: 'Odd or Even',
+      appNameDisplay: 'standalone',
+      appIconUrl: 'index.png',
+      assetUrl: './add-to-homescreen/img/',
+      displayOptions: { showMobile: true, showDesktop: false },
+    });
+
+    const { isStandalone, isDesktop } = getAddToHomeScreenProperties(
+      addToHomeScreenInstance,
+    );
+
+    const hideInstallButton = isStandalone || isDesktop;
+    if (hideInstallButton) {
+      document.getElementById('install-pwa').classList.add('hidden');
+    } else {
+      document.getElementById('install-pwa').classList.remove('hidden');
+      document.getElementById('install-pwa').addEventListener('click', () => {
+        addToHomeScreenInstance.show('en');
+      });
+    }
+  });
+}
+
+setupAddToHomeScreen();
 start();

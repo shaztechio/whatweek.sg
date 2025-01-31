@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
+
 /**
  * Gets the first day of the year, UTC.
  *
@@ -135,4 +138,79 @@ export function refresh(timeoutId, callback) {
   // update again at midnight
   const ms = millisecondsUntilMidnight();
   return setTimeout(callback, ms);
+}
+
+/**
+ * Create an AddToHomeScreen instance.
+ *
+ * @param {object} params params
+ * @param {string} params.appName the app name
+ * @param {string} params.appNameDisplay the app name to display
+ * @param {string} params.appIconUrl the url to the app icon
+ * @param {string} params.assetUrl the url to the component assets
+ * @param {object} params.displayOptions the display options (properties: showMobile(boolean) showDesktop(boolean))
+ * @returns {object} an AddToHomeScreen instance
+ */
+export function createAddToHomeScreenComponent({
+  appName,
+  appNameDisplay,
+  appIconUrl,
+  assetUrl,
+  displayOptions,
+}) {
+  const { AddToHomeScreen } = window;
+  return AddToHomeScreen({
+    appName,
+    appNameDisplay,
+    appIconUrl,
+    assetUrl,
+    displayOptions,
+  });
+}
+
+/**
+ * Gets the browser properties from the AddToHomeScreen instance.
+ *
+ * @param {object} addToHomeScreenInstance
+ * @returns {object} the browser properties
+ */
+export function getAddToHomeScreenProperties(addToHomeScreenInstance) {
+  const {
+    isStandAlone,
+    isBrowserAndroidChrome,
+    isBrowserAndroidFacebook,
+    isBrowserAndroidFirefox,
+    isBrowserAndroidSamsung,
+    isBrowserIOSChrome,
+    isBrowserIOSFirefox,
+    isBrowserIOSInAppFacebook,
+    isBrowserIOSInAppInstagram,
+    isBrowserIOSInAppLinkedin,
+    isBrowserIOSInAppThreads,
+    isBrowserIOSInAppTwitter,
+    isBrowserIOSSafari,
+  } = addToHomeScreenInstance;
+  const isInStandAloneMode = isStandAlone();
+  const isBrowserAndroid =
+    isBrowserAndroidChrome() ||
+    isBrowserAndroidFacebook() ||
+    isBrowserAndroidFirefox() ||
+    isBrowserAndroidSamsung();
+  const isBrowserIos =
+    isBrowserIOSChrome() ||
+    isBrowserIOSFirefox() ||
+    isBrowserIOSInAppFacebook() ||
+    isBrowserIOSInAppInstagram() ||
+    isBrowserIOSInAppLinkedin() ||
+    isBrowserIOSInAppThreads() ||
+    isBrowserIOSInAppTwitter() ||
+    isBrowserIOSSafari();
+  const isDesktop = !isBrowserAndroid && !isBrowserIos;
+
+  return {
+    isBrowserIos,
+    isBrowserAndroid,
+    isStandAlone: isInStandAloneMode,
+    isDesktop,
+  };
 }
