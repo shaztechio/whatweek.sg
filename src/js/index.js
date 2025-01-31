@@ -3,8 +3,8 @@ import {
   getWeekNumber,
   updateTextContents,
   numberToEmoji,
-  millisecondsUntilMidnight,
   reportError,
+  refresh,
 } from './utils';
 
 /**
@@ -38,39 +38,38 @@ export function main(testDate) {
 }
 
 /**
- * Refresh the page, and set a timer to refresh it again at midnight.
- *
- * @param {number} timeoutId the timeout id for refreshing the page at midnight
- * @returns {number} the new timeoutId
- */
-export function refresh(timeoutId) {
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
-  // update
-  main();
-  // update again at midnight
-  const ms = millisecondsUntilMidnight();
-  return setTimeout(main, ms);
-}
-
-/**
  * Kick off
  */
-try {
-  let timeoutId;
+export function start() {
+  try {
+    let timeoutId;
 
-  // when the page is visible, we refresh
-  document.addEventListener('visibilitychange', (e) => {
-    if (e.target.visibilityState === 'visible') {
-      timeoutId = refresh(timeoutId);
-    } else if (e.target.visibilityState === 'hidden') {
-      // do nothing
-    }
-  });
+    // when the page is visible, we refresh
+    document.addEventListener('visibilitychange', (e) => {
+      if (e.target.visibilityState === 'visible') {
+        timeoutId = refresh(timeoutId, main);
+      } else if (e.target.visibilityState === 'hidden') {
+        // do nothing
+      }
+    });
 
-  // run it at least once
-  timeoutId = refresh(timeoutId);
-} catch (err) {
-  reportError(err);
+    // run it at least once
+    timeoutId = refresh(timeoutId, main);
+  } catch (e) {
+    reportError(e);
+  }
 }
+
+// UNHANDLED ERRORS /////////////////////////////
+/* v8 ignore start */
+window.onunhandledrejection = (event) =>
+  reportError(`unhandled promise rejection: ${event.reason}`);
+const onError = (_message, _source, _lineNumber, _colno, error) =>
+  reportError(error);
+
+window.onerror = onError;
+window.addEventListener('error', onError);
+/* v8 ignore stop */
+// //////////////////////////////////////////////
+
+start();

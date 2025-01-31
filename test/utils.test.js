@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { expect, test, vi } from 'vitest';
+import { expect, test, describe, vi } from 'vitest';
 import {
   getFirstDateOfTheYear,
   getWeekNumber,
@@ -8,31 +7,14 @@ import {
   calculateWeekOffset,
   numberToEmoji,
   millisecondsUntilMidnight,
+  refresh,
 } from '../src/js/utils';
 
 test('getFirstDateOfTheYear', () => {
   const firstDate = getFirstDateOfTheYear();
-  expect(firstDate.getUTCFullYear()).toBe(new Date().getFullYear());
-  expect(firstDate.getUTCMonth()).toBe(0);
-  expect(firstDate.getUTCDate()).toBe(1);
-});
-
-test('getWeekNumber - first week of the year', () => {
-  const date = new Date('2023-01-01');
-  const weekNumber = getWeekNumber(date);
-  expect(weekNumber).toEqual(1);
-});
-
-test('getWeekNumber - middle of the year', () => {
-  const date = new Date('2023-06-15');
-  const weekNumber = getWeekNumber(date);
-  expect(weekNumber).toEqual(24);
-});
-
-test('getWeekNumber - last week of the year', () => {
-  const date = new Date('2023-12-31');
-  const weekNumber = getWeekNumber(date);
-  expect(weekNumber).toEqual(53);
+  expect(firstDate.getFullYear()).toBe(new Date().getFullYear());
+  expect(firstDate.getMonth()).toBe(0);
+  expect(firstDate.getDate()).toBe(1);
 });
 
 test('updateTextContents', () => {
@@ -54,22 +36,74 @@ test('reportError', () => {
   );
 });
 
-test('calculateWeekOffset - Thursday', () => {
-  const date = new Date('2023-01-05'); // 5th Jan 2023 is a Thursday
-  vi.setSystemTime(date);
-  expect(calculateWeekOffset()).toEqual(1);
+describe('getWeekNumber', () => {
+  test('first week of the year', () => {
+    const date = new Date('2025-01-01');
+    const weekNumber = getWeekNumber(date);
+    expect(weekNumber).toEqual(1);
+  });
+
+  test('middle of the year', () => {
+    const date = new Date('2025-06-15');
+    const weekNumber = getWeekNumber(date);
+    expect(weekNumber).toEqual(24);
+  });
+
+  test('last week of the year', () => {
+    const date = new Date('2025-12-31');
+    const weekNumber = getWeekNumber(date);
+    expect(weekNumber).toEqual(53);
+  });
 });
 
-test('calculateWeekOffset - Friday', () => {
-  const date = new Date('2023-01-06'); // 6th Jan 2023 is a Friday
-  vi.setSystemTime(date);
-  expect(calculateWeekOffset()).toEqual(1);
-});
+describe('calculateWeekOffset', () => {
+  test('2025', () => {
+    const date = new Date('2025-01-02'); // 2nd Jan 2025 is a Thursday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(1);
+  });
 
-test('calculateWeekOffset - Other days', () => {
-  const date = new Date('2023-01-02'); // 2nd Jan 2023 is a Monday
-  vi.setSystemTime(date);
-  expect(calculateWeekOffset()).toEqual(0);
+  test('2026', () => {
+    const date = new Date('2026-01-02'); // 2nd Jan 2026 is a Friday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(1);
+  });
+
+  test('2027', () => {
+    const date = new Date('2027-01-02'); // 2nd Jan 2027 is a Saturday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(0);
+  });
+
+  test('2028', () => {
+    const date = new Date('2028-01-02'); // 2nd Jan 2028 is a Sunday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(0);
+  });
+
+  test('2029', () => {
+    const date = new Date('2029-01-02'); // 2nd Jan 2029 is a Tuesday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(0);
+  });
+
+  test('2030', () => {
+    const date = new Date('2030-01-02'); // 2nd Jan 2030 is a Wednesday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(0);
+  });
+
+  test('2031', () => {
+    const date = new Date('2031-01-02'); // 2nd Jan 2031 is a Thursday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(1);
+  });
+
+  test('2032', () => {
+    const date = new Date('2032-01-02'); // 2nd Jan 2032 is a Friday
+    vi.setSystemTime(date);
+    expect(calculateWeekOffset()).toEqual(1);
+  });
 });
 
 test('numberToEmoji', () => {
@@ -87,4 +121,21 @@ test('millisecondsUntilMidnight', () => {
   );
   const expectedMilliseconds = midnight - now;
   expect(millisecondsUntilMidnight()).toBeCloseTo(expectedMilliseconds, -2);
+});
+
+test('refresh - sets a timeout to refresh at midnight', () => {
+  const originalClearTimeout = global.clearTimeout;
+  const originalSetTimeout = global.setTimeout;
+  global.clearTimeout = vi.fn();
+  global.setTimeout = vi.fn(() => 12345);
+
+  const timeoutId = 67890;
+  const newTimeoutId = refresh(timeoutId, () => {});
+
+  expect(global.clearTimeout).toHaveBeenCalledWith(timeoutId);
+  expect(global.setTimeout).toHaveBeenCalled();
+  expect(newTimeoutId).toEqual(12345);
+
+  global.clearTimeout = originalClearTimeout;
+  global.setTimeout = originalSetTimeout;
 });

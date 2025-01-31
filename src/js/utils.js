@@ -119,3 +119,20 @@ export function millisecondsUntilMidnight() {
   );
   return midnight - now;
 }
+
+/**
+ * Refresh the page, and set a timer to refresh it again at midnight.
+ *
+ * @param {number} timeoutId the timeout id for refreshing the page at midnight
+ * @returns {number} the new timeoutId
+ */
+export function refresh(timeoutId, callback) {
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+  // update
+  callback();
+  // update again at midnight
+  const ms = millisecondsUntilMidnight();
+  return setTimeout(callback, ms);
+}
