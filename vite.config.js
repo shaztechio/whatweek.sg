@@ -8,6 +8,7 @@ export default defineConfig({
     coverage: {
       include: ['src/js/*'],
     },
+    setupFiles: ['test/vitest.setup.js'],
   },
   publicDir: 'public',
   root: './',

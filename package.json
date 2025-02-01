@@ -3,6 +3,8 @@
   "version": "0.0.2",
   "main": "index.html",
   "type": "module",
+  "author": "Shazron Abdullah",
+  "license": "UNLICENSED",
   "keywords": [
     "vanilla",
     "javascript",

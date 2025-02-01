@@ -8,6 +8,8 @@ import {
   numberToEmoji,
   millisecondsUntilMidnight,
   refresh,
+  createAddToHomeScreenComponent,
+  getAddToHomeScreenProperties,
 } from '../src/js/utils';
 
 test('getFirstDateOfTheYear', () => {
@@ -34,6 +36,23 @@ test('reportError', () => {
   expect(window.alert).toHaveBeenCalledWith(
     `uh oh there was an error in the code (sorry!) or you are probably not running a modern browser:\n\n${error}`,
   );
+});
+
+test('createAddToHomeScreenComponent', () => {
+  const options = {
+    appName: 'My App',
+    appNameDisplay: 'standalone',
+    appIconUrl: './foo/bar',
+    assetUrl: './foo/bar',
+    displayOptions: { showMobile: true, showDesktop: false },
+  };
+  const component = createAddToHomeScreenComponent(options);
+
+  expect(typeof component).toEqual('object');
+  expect(component.appName).toEqual(options.appName);
+  expect(component.appIconUrl).toEqual(options.appIconUrl);
+  expect(component.assetUrl).toEqual(options.assetUrl);
+  expect(component.displayOptions).toEqual(options.displayOptions);
 });
 
 describe('getWeekNumber', () => {
@@ -138,4 +157,49 @@ test('refresh - sets a timeout to refresh at midnight', () => {
 
   global.clearTimeout = originalClearTimeout;
   global.setTimeout = originalSetTimeout;
+});
+
+describe('getAddToHomeScreenProperties', () => {
+  test('android chrome && standalone', () => {
+    const instance = global.testCreateAddToHomeScreenInstance({
+      android: true,
+      chrome: true,
+      standalone: true,
+    });
+    const props = getAddToHomeScreenProperties(instance);
+    expect(props).toEqual({
+      isBrowserAndroid: true,
+      isBrowserIos: false,
+      isDesktop: false,
+      isStandAlone: true,
+    });
+  });
+
+  test('ios safari', () => {
+    const instance = global.testCreateAddToHomeScreenInstance({
+      ios: true,
+      safari: true,
+    });
+    const props = getAddToHomeScreenProperties(instance);
+    expect(props).toEqual({
+      isBrowserAndroid: false,
+      isBrowserIos: true,
+      isDesktop: false,
+      isStandAlone: false,
+    });
+  });
+
+  test('desktop', () => {
+    const instance = global.testCreateAddToHomeScreenInstance({
+      android: false,
+      ios: false,
+    });
+    const props = getAddToHomeScreenProperties(instance);
+    expect(props).toEqual({
+      isBrowserAndroid: false,
+      isBrowserIos: false,
+      isDesktop: true,
+      isStandAlone: false,
+    });
+  });
 });

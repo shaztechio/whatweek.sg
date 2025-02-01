@@ -1,6 +1,11 @@
 import { expect, test, describe, beforeEach, vi } from 'vitest';
-import { main, start } from '../src/js/index';
-import { refresh, reportError } from '../src/js/utils';
+import { main, start, setupAddToHomeScreen } from '../src/js/index';
+import {
+  refresh,
+  reportError,
+  createAddToHomeScreenComponent,
+  getAddToHomeScreenProperties,
+} from '../src/js/utils';
 
 vi.mock('../src/js/utils', { spy: true });
 window.alert = vi.fn();
@@ -88,5 +93,90 @@ describe('kickoff', () => {
     });
     expect(() => start()).toThrow(error);
     expect(reportError).toHaveBeenCalled();
+  });
+});
+
+describe('setupAddToHomeScreen', () => {
+  beforeEach(() => {
+    createAddToHomeScreenComponent.mockReturnValue({});
+    getAddToHomeScreenProperties.mockClear();
+
+    document.addEventListener = vi.fn((eventname, handler) => {
+      if (eventname === 'DOMContentLoaded') {
+        handler();
+      }
+    });
+  });
+
+  test('not desktop nor standalone - show install button', () => {
+    document.body.innerHTML = `
+      <button type="button" id="install-pwa" class="install-pwa"></button>
+    `;
+
+    const installPwaButtonNode = document.getElementById('install-pwa');
+    getAddToHomeScreenProperties.mockReturnValue({
+      isStandalone: false,
+      isDesktop: false,
+    });
+
+    setupAddToHomeScreen();
+    expect(installPwaButtonNode.classList).not.toContain('hidden');
+  });
+
+  test('standalone - hidden install button', () => {
+    document.body.innerHTML = `
+      <button type="button" id="install-pwa" class="install-pwa"></button>
+    `;
+
+    const installPwaButtonNode = document.getElementById('install-pwa');
+    getAddToHomeScreenProperties.mockReturnValue({
+      isStandalone: true,
+      isDesktop: false,
+    });
+
+    setupAddToHomeScreen();
+    expect(installPwaButtonNode.classList).toContain('hidden');
+  });
+
+  test('desktop - hidden install button', () => {
+    document.body.innerHTML = `
+      <button type="button" id="install-pwa" class="install-pwa"></button>
+    `;
+
+    const installPwaButtonNode = document.getElementById('install-pwa');
+    getAddToHomeScreenProperties.mockReturnValue({
+      isStandalone: false,
+      isDesktop: true,
+    });
+
+    setupAddToHomeScreen();
+    expect(installPwaButtonNode.classList).toContain('hidden');
+  });
+
+  test('install button click handler', () => {
+    document.body.innerHTML = `
+      <button type="button" id="install-pwa" class="install-pwa"></button>
+    `;
+
+    const installPwaButtonNode = document.getElementById('install-pwa');
+    installPwaButtonNode.addEventListener = vi.fn((eventname, handler) => {
+      if (eventname === 'click') {
+        handler();
+      }
+    });
+
+    const mockShow = vi.fn();
+    createAddToHomeScreenComponent.mockReturnValue({
+      show: mockShow,
+    });
+    getAddToHomeScreenProperties.mockReturnValue({
+      isStandalone: false,
+      isDesktop: false,
+    });
+
+    setupAddToHomeScreen();
+    expect(installPwaButtonNode.classList).not.toContain('hidden');
+    expect(installPwaButtonNode.addEventListener).toHaveBeenCalled();
+    expect(mockShow).toHaveBeenCalled();
   });
 });
