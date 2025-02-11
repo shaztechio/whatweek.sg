@@ -100,15 +100,14 @@ export function setupAddToHomeScreen() {
     );
 
     const hideInstallButton = isStandalone || isDesktop;
-    // posthog.capture('is_standalone', { property: isStandalone });
-    // posthog.capture('is_desktop', { property: isDesktop });
+    posthog.capture('add_to_homescreen', { isDesktop, isStandalone });
     if (hideInstallButton) {
       document.getElementById('install-pwa').classList.add('hidden');
     } else {
       document.getElementById('install-pwa').classList.remove('hidden');
       document.getElementById('install-pwa').addEventListener('click', () => {
         addToHomeScreenInstance.show('en');
-        // posthog.capture('install_pressed', { property: 'true' });
+        posthog.capture('install_button_pressed');
       });
     }
   });
