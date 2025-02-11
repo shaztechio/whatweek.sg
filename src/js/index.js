@@ -95,12 +95,12 @@ export function setupAddToHomeScreen() {
       displayOptions: { showMobile: true, showDesktop: false },
     });
 
-    const { isStandalone, isDesktop } = getAddToHomeScreenProperties(
+    const { isStandAlone, isDesktop } = getAddToHomeScreenProperties(
       addToHomeScreenInstance,
     );
 
-    const hideInstallButton = isStandalone || isDesktop;
-    posthog.capture('add_to_homescreen', { isDesktop, isStandalone });
+    const hideInstallButton = isStandAlone || isDesktop;
+    posthog.capture('add_to_homescreen', { isDesktop, isStandAlone });
     if (hideInstallButton) {
       document.getElementById('install-pwa').classList.add('hidden');
     } else {
