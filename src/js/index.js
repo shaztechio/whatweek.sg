@@ -1,3 +1,4 @@
+import posthog from 'posthog-js';
 // eslint-disable-next-line no-unused-vars
 import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
 import {
@@ -80,6 +81,11 @@ window.addEventListener('error', onError);
  * Setup all the Add to Homescreen components.
  */
 export function setupAddToHomeScreen() {
+  posthog.init('phc_EFfe5zO3shj309xQC10LIp8f4Isnf7VVAIbSN7kNsjX', {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
     const addToHomeScreenInstance = createAddToHomeScreenComponent({
       appName: 'Odd or Even',
@@ -94,12 +100,15 @@ export function setupAddToHomeScreen() {
     );
 
     const hideInstallButton = isStandalone || isDesktop;
+    // posthog.capture('is_standalone', { property: isStandalone });
+    // posthog.capture('is_desktop', { property: isDesktop });
     if (hideInstallButton) {
       document.getElementById('install-pwa').classList.add('hidden');
     } else {
       document.getElementById('install-pwa').classList.remove('hidden');
       document.getElementById('install-pwa').addEventListener('click', () => {
         addToHomeScreenInstance.show('en');
+        // posthog.capture('install_pressed', { property: 'true' });
       });
     }
   });
