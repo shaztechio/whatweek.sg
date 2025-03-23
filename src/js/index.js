@@ -3,6 +3,7 @@ import posthog from 'posthog-js';
 import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
 import {
   calculateWeekOffset,
+  getTermWeekInfo,
   getWeekNumber,
   updateTextContents,
   numberToEmoji,
@@ -22,23 +23,46 @@ export function main(testDate) {
   const todayDateString = today.toDateString('en-GB');
 
   const weekOffset = calculateWeekOffset();
-  const todayWeekNumber = getWeekNumber(today) - weekOffset;
-  const isEven = todayWeekNumber % 2 === 0;
+  const weekNumber = getWeekNumber(today);
+  const todayWeekNumber = weekNumber - weekOffset;
+  const termInfo = getTermWeekInfo(todayWeekNumber);
+  const isBreak = termInfo.break.includes(todayWeekNumber);
+
+  // adjust week number for new terms and breaks
+  let adjustedWeekNumber = todayWeekNumber - termInfo.start + 1;
+  if (isBreak) {
+    adjustedWeekNumber = 0;
+  }
+
+  const isEven = adjustedWeekNumber % 2 === 0;
 
   const weekNumberNodeList = document.querySelectorAll('.week-number');
-  updateTextContents(weekNumberNodeList, () => numberToEmoji(todayWeekNumber));
+  updateTextContents(weekNumberNodeList, () =>
+    numberToEmoji(adjustedWeekNumber),
+  );
 
   const todayDateNodeList = document.querySelectorAll('.today-date');
-  updateTextContents(todayDateNodeList, () => todayDateString);
+  updateTextContents(
+    todayDateNodeList,
+    () => `${todayDateString} (Term ${termInfo.term})`,
+  );
 
   const allOddOrEvenNodeList = document.querySelectorAll('.odd-or-even');
   updateTextContents(allOddOrEvenNodeList, () => {
-    return isEven ? 'even' : 'odd';
+    let text = isEven ? 'even' : 'odd';
+    if (isBreak) {
+      text = 'break';
+    }
+    return text;
   });
 
   const oeDecoratorNodeList = document.querySelectorAll('.oe-decorator');
   updateTextContents(oeDecoratorNodeList, () => {
-    return isEven ? '\u270c' : '\u261d';
+    let text = isEven ? '\u270c' : '\u261d';
+    if (isBreak) {
+      text = '🌴';
+    }
+    return text;
   });
 }
 
