@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
+import termsData2025 from './terms.2025';
 
 /**
  * Gets the first day of the year, UTC.
@@ -36,37 +37,20 @@ export function getWeekNumber(aDate) {
   return weekNo;
 }
 
-export const termsData = [
-  {
-    term: 1,
-    start: 1,
-    end: 10,
-    break: [11],
-  },
-  {
-    term: 2,
-    start: 12,
-    end: 21,
-    break: [22, 23, 24, 25],
-  },
-  {
-    term: 3,
-    start: 26,
-    end: 35,
-    break: [36],
-  },
-  {
-    term: 4,
-    start: 37,
-    end: 46,
-    break: [47, 48, 49, 50, 51, 52],
-  },
-];
-
+/**
+ * Gets the term information for a given week number.
+ *
+ * @param {number} weekNo - The ISO week number to get term info for
+ * @returns {Object} The term information object containing:
+ *   - term: {number} The term number (1-4)
+ *   - start: {number} The starting week number of the term
+ *   - end: {number} The ending week number of the term
+ *   - break: {number[]} Array of week numbers that are breaks in this term
+ */
 export function getTermWeekInfo(weekNo) {
   // for adjusting week number for new terms and breaks
 
-  const termInfo = termsData.find((term) => {
+  const termInfo = termsData2025.find((term) => {
     return (
       (weekNo >= term.start && weekNo <= term.end) ||
       term.break.includes(weekNo)

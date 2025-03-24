@@ -1,6 +1,5 @@
 import { expect, test, describe, vi } from 'vitest';
 import {
-  termsData,
   getFirstDateOfTheYear,
   getTermWeekInfo,
   getWeekNumber,
@@ -13,6 +12,7 @@ import {
   createAddToHomeScreenComponent,
   getAddToHomeScreenProperties,
 } from '../src/js/utils';
+import termsData2025 from '../src/js/terms.2025';
 
 test('getFirstDateOfTheYear', () => {
   const firstDate = getFirstDateOfTheYear();
@@ -208,42 +208,42 @@ describe('getAddToHomeScreenProperties', () => {
 
 describe('getTermWeekInfo', () => {
   test('term 1', () => {
-    expect(getTermWeekInfo(1)).toEqual(termsData[0]);
-    expect(getTermWeekInfo(5)).toEqual(termsData[0]);
-    expect(getTermWeekInfo(10)).toEqual(termsData[0]);
+    expect(getTermWeekInfo(1)).toEqual(termsData2025[0]);
+    expect(getTermWeekInfo(5)).toEqual(termsData2025[0]);
+    expect(getTermWeekInfo(10)).toEqual(termsData2025[0]);
     // break
-    expect(getTermWeekInfo(11)).toEqual(termsData[0]);
+    expect(getTermWeekInfo(11)).toEqual(termsData2025[0]);
   });
 
   test('term 2', () => {
-    expect(getTermWeekInfo(12)).toEqual(termsData[1]);
-    expect(getTermWeekInfo(17)).toEqual(termsData[1]);
-    expect(getTermWeekInfo(21)).toEqual(termsData[1]);
+    expect(getTermWeekInfo(12)).toEqual(termsData2025[1]);
+    expect(getTermWeekInfo(17)).toEqual(termsData2025[1]);
+    expect(getTermWeekInfo(21)).toEqual(termsData2025[1]);
     // break
-    expect(getTermWeekInfo(22)).toEqual(termsData[1]);
-    expect(getTermWeekInfo(23)).toEqual(termsData[1]);
-    expect(getTermWeekInfo(24)).toEqual(termsData[1]);
-    expect(getTermWeekInfo(25)).toEqual(termsData[1]);
+    expect(getTermWeekInfo(22)).toEqual(termsData2025[1]);
+    expect(getTermWeekInfo(23)).toEqual(termsData2025[1]);
+    expect(getTermWeekInfo(24)).toEqual(termsData2025[1]);
+    expect(getTermWeekInfo(25)).toEqual(termsData2025[1]);
   });
 
   test('term 3', () => {
-    expect(getTermWeekInfo(26)).toEqual(termsData[2]);
-    expect(getTermWeekInfo(30)).toEqual(termsData[2]);
-    expect(getTermWeekInfo(35)).toEqual(termsData[2]);
+    expect(getTermWeekInfo(26)).toEqual(termsData2025[2]);
+    expect(getTermWeekInfo(30)).toEqual(termsData2025[2]);
+    expect(getTermWeekInfo(35)).toEqual(termsData2025[2]);
     // break
-    expect(getTermWeekInfo(36)).toEqual(termsData[2]);
+    expect(getTermWeekInfo(36)).toEqual(termsData2025[2]);
   });
 
   test('term 4', () => {
-    expect(getTermWeekInfo(37)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(41)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(46)).toEqual(termsData[3]);
+    expect(getTermWeekInfo(37)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(41)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(46)).toEqual(termsData2025[3]);
     // break
-    expect(getTermWeekInfo(47)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(48)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(49)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(50)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(51)).toEqual(termsData[3]);
-    expect(getTermWeekInfo(52)).toEqual(termsData[3]);
+    expect(getTermWeekInfo(47)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(48)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(49)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(50)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(51)).toEqual(termsData2025[3]);
+    expect(getTermWeekInfo(52)).toEqual(termsData2025[3]);
   });
 });
