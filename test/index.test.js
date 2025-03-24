@@ -33,7 +33,8 @@ describe('main', () => {
   const oeDecoratorNode = document.querySelector('.oe-decorator');
 
   test('even - term 1', () => {
-    const testDate = new Date('2025-01-13');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-01-13`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('2️⃣');
@@ -45,7 +46,8 @@ describe('main', () => {
   });
 
   test('odd - term 1', () => {
-    const testDate = new Date('2025-01-06');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-01-06`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('1️⃣');
@@ -57,7 +59,8 @@ describe('main', () => {
   });
 
   test('break - term 1', () => {
-    const testDate = new Date('2025-03-20');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-03-20`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('0️⃣');
@@ -69,7 +72,8 @@ describe('main', () => {
   });
 
   test('odd - term 2', () => {
-    const testDate = new Date('2025-03-24');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-03-24`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('1️⃣');
@@ -81,7 +85,8 @@ describe('main', () => {
   });
 
   test('even - term 2', () => {
-    const testDate = new Date('2025-04-01');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-04-01`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('2️⃣');
@@ -92,9 +97,11 @@ describe('main', () => {
     expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
   });
 
-  test('break - term 2', () => {
-    {
-      const testDate = new Date('2025-06-02');
+  test.each([['06-02'], ['06-09'], ['06-16'], ['06-23']])(
+    'break - term 2 on %s',
+    (dateStr) => {
+      const currentYear = new Date().getFullYear();
+      const testDate = new Date(`${currentYear}-${dateStr}`);
       main(testDate);
 
       expect(weekNumberNode.textContent).toEqual('0️⃣');
@@ -103,44 +110,12 @@ describe('main', () => {
       );
       expect(oddOrEvenNode.textContent).toEqual('break');
       expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-06-09');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 2)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-06-16');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 2)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-06-23');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 2)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-  });
+    },
+  );
 
   test('odd - term 3', () => {
-    const testDate = new Date('2025-06-30');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-06-30`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('1️⃣');
@@ -152,7 +127,8 @@ describe('main', () => {
   });
 
   test('even - term 3', () => {
-    const testDate = new Date('2025-07-07');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-07-07`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('2️⃣');
@@ -164,7 +140,8 @@ describe('main', () => {
   });
 
   test('break - term 3', () => {
-    const testDate = new Date('2025-09-08');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-09-08`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('0️⃣');
@@ -176,7 +153,8 @@ describe('main', () => {
   });
 
   test('odd - term 4', () => {
-    const testDate = new Date('2025-09-15');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-09-15`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('1️⃣');
@@ -188,7 +166,8 @@ describe('main', () => {
   });
 
   test('even - term 4', () => {
-    const testDate = new Date('2025-09-22');
+    const currentYear = new Date().getFullYear();
+    const testDate = new Date(`${currentYear}-09-22`);
     main(testDate);
 
     expect(weekNumberNode.textContent).toEqual('2️⃣');
@@ -199,9 +178,11 @@ describe('main', () => {
     expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
   });
 
-  test('break - term 4', () => {
-    {
-      const testDate = new Date('2025-11-24');
+  test.each([['11-24'], ['12-01'], ['12-08'], ['12-15'], ['12-22'], ['12-31']])(
+    'break - term 4 on %s',
+    (dateStr) => {
+      const currentYear = new Date().getFullYear();
+      const testDate = new Date(`${currentYear}-${dateStr}`);
       main(testDate);
 
       expect(weekNumberNode.textContent).toEqual('0️⃣');
@@ -210,63 +191,8 @@ describe('main', () => {
       );
       expect(oddOrEvenNode.textContent).toEqual('break');
       expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-12-01');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-12-08');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-12-15');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-12-22');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-    {
-      const testDate = new Date('2025-12-31');
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
-    }
-  });
+    },
+  );
 });
 
 describe('kickoff', () => {
