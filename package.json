@@ -50,7 +50,7 @@
     "prettier": "^3.4.2",
     "vite": "6.3.3",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^3.0.4"
+    "vitest": "^3.2.2"
   },
   "dependencies": {
     "posthog-js": "^1.237.0",
