@@ -38,7 +38,7 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.20",
-    "cssnano": "^7.0.7",
+    "cssnano": "^7.1.1",
     "eslint": "^9",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^10.1.5",
