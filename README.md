@@ -21,3 +21,10 @@ These files are in the `public` folder:
 
 - run `npm test`
 - they should be at 100% coverage
+
+## Browser tests
+
+- run `npm run test:e2e:install` once to download the Playwright browsers
+- run `npm run test:e2e` to execute the end-to-end suite against a preview build
+- the suite boots a production preview, then verifies the homepage renders the week state, date label, and add-to-homescreen button across Chromium, Firefox, and WebKit
+- use `npm run test:e2e:headed` for a visible Chromium session while developing tests
