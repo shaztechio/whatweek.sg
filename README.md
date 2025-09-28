@@ -10,7 +10,8 @@ These files are in the `public` folder:
 
 - captain-definition
 - Dockerfile
-- manifest.json
+
+The PWA manifest is bundled at build time by `vite-plugin-pwa`.
 
 ## Dev
 

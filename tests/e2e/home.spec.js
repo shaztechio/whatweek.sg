@@ -31,4 +31,35 @@ test.describe('whatweek.sg homepage', () => {
     const classList = await installButton.getAttribute('class');
     expect(classList).not.toBeNull();
   });
+
+  test('serves cached content when offline', async ({
+    page,
+    context,
+    browserName,
+  }) => {
+    test.skip(
+      browserName === 'webkit',
+      'Offline emulation is not supported in WebKit',
+    );
+
+    await page.goto('/');
+    await page.waitForFunction(
+      () => navigator.serviceWorker?.ready?.then(() => true) ?? false,
+    );
+    await page.reload();
+    await page.waitForFunction(
+      () => navigator.serviceWorker?.controller !== null,
+    );
+
+    const onlineStatus = await page.textContent('.odd-or-even');
+    await context.setOffline(true);
+
+    try {
+      await page.reload();
+      const offlineStatus = await page.textContent('.odd-or-even');
+      expect(offlineStatus?.trim()).toEqual(onlineStatus?.trim());
+    } finally {
+      await context.setOffline(false);
+    }
+  });
 });
