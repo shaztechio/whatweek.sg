@@ -1,6 +1,8 @@
 # whatweek.sg
 
-Determines if the school week is odd or even (Singapore)
+Determines if the school week is odd or even (Singapore).
+
+See [Repository Guidelines](AGENTS.md) for contributor instructions.
 
 These files are in the `public` folder:
 
