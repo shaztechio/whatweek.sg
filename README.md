@@ -28,3 +28,7 @@ These files are in the `public` folder:
 - run `npm run test:e2e` to execute the end-to-end suite against a preview build
 - the suite boots a production preview, then verifies the homepage renders the week state, date label, and add-to-homescreen button across Chromium, Firefox, and WebKit
 - use `npm run test:e2e:headed` for a visible Chromium session while developing tests
+
+## Offline support
+
+The build pipeline ships a PWA service worker (via `vite-plugin-pwa`) that precaches core assets and serves the app offline. The cache updates automatically when a fresh build is deployed.

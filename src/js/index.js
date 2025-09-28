@@ -14,6 +14,19 @@ import {
 } from './utils';
 import { getTermsDataForYear } from './terms';
 
+/* v8 ignore start */
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  // eslint-disable-next-line import/no-unresolved
+  import('virtual:pwa-register')
+    .then(({ registerSW }) => {
+      registerSW({ immediate: true });
+    })
+    .catch(() => {
+      // ignore registration errors in unsupported contexts
+    });
+}
+/* v8 ignore stop */
+
 /**
  * Main function.
  *
