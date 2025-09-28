@@ -1,4 +1,12 @@
-import { expect, test, describe, beforeEach, vi } from 'vitest';
+import {
+  expect,
+  test,
+  describe,
+  beforeEach,
+  beforeAll,
+  afterAll,
+  vi,
+} from 'vitest';
 import { main, start, setupAddToHomeScreen } from '../src/js/index';
 import {
   refresh,
@@ -9,6 +17,27 @@ import {
 
 vi.mock('../src/js/utils', { spy: true });
 window.alert = vi.fn();
+
+const DATE_FORMAT_OPTIONS = {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'Asia/Singapore',
+};
+const TEST_YEAR = 2025;
+
+const formatDisplayDate = (date) =>
+  date.toLocaleDateString('en-GB', DATE_FORMAT_OPTIONS);
+
+beforeAll(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(`${TEST_YEAR}-01-01T00:00:00Z`));
+});
+
+afterAll(() => {
+  vi.useRealTimers();
+});
 
 beforeEach(() => {
   refresh.mockClear();
@@ -21,178 +50,259 @@ test('exports', () => {
 
 describe('main', () => {
   vi.doUnmock('../src/js/utils');
-  document.body.innerHTML = `
-    <div class="week-number"></div>
-    <div class="today-date"></div>
-    <div class="odd-or-even"></div>
-    <div class="oe-decorator"></div>
-  `;
-  const weekNumberNode = document.querySelector('.week-number');
-  const todayDateNode = document.querySelector('.today-date');
-  const oddOrEvenNode = document.querySelector('.odd-or-even');
-  const oeDecoratorNode = document.querySelector('.oe-decorator');
 
-  test('even - term 1', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-01-13`);
-    main(testDate);
+  let weekNumberNode;
+  let todayDateNode;
+  let oddOrEvenNode;
+  let oeDecoratorNode;
 
-    expect(weekNumberNode.textContent).toEqual('2️⃣');
+  const expectUiState = ({
+    date,
+    weekText,
+    stateText,
+    emoji,
+    term,
+    options,
+  }) => {
+    main(date, options);
+    expect(weekNumberNode.textContent).toEqual(weekText);
     expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 1)`,
+      `${formatDisplayDate(date)} (Term ${term})`,
     );
-    expect(oddOrEvenNode.textContent).toEqual('even');
-    expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
+    expect(oddOrEvenNode.textContent).toEqual(stateText);
+    expect(oeDecoratorNode.textContent).toEqual(emoji);
+  };
+
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div class="week-number"></div>
+      <div class="today-date"></div>
+      <div class="odd-or-even"></div>
+      <div class="oe-decorator"></div>
+    `;
+    weekNumberNode = document.querySelector('.week-number');
+    todayDateNode = document.querySelector('.today-date');
+    oddOrEvenNode = document.querySelector('.odd-or-even');
+    oeDecoratorNode = document.querySelector('.oe-decorator');
+  });
+
+  test('pre-term break is treated as a break week', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-01`),
+      weekText: '0️⃣',
+      stateText: 'break',
+      emoji: '🌴',
+      term: 1,
+    });
   });
 
   test('odd - term 1', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-01-06`);
-    main(testDate);
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-06`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: 1,
+    });
+  });
 
-    expect(weekNumberNode.textContent).toEqual('1️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 1)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('odd');
-    expect(oeDecoratorNode.textContent).toEqual('\u261d'); // 1 finger up
+  test('even - term 1', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-13`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 1,
+    });
   });
 
   test('break - term 1', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-03-20`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('0️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 1)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('break');
-    expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-03-20`),
+      weekText: '0️⃣',
+      stateText: 'break',
+      emoji: '🌴',
+      term: 1,
+    });
   });
 
   test('odd - term 2', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-03-24`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('1️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 2)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('odd');
-    expect(oeDecoratorNode.textContent).toEqual('\u261d'); // 1 finger up
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-03-24`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: 2,
+    });
   });
 
   test('even - term 2', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-04-01`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('2️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 2)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('even');
-    expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-04-01`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 2,
+    });
   });
 
   test.each([['06-02'], ['06-09'], ['06-16'], ['06-23']])(
     'break - term 2 on %s',
     (dateStr) => {
-      const currentYear = new Date().getFullYear();
-      const testDate = new Date(`${currentYear}-${dateStr}`);
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 2)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
+      expectUiState({
+        date: new Date(`${TEST_YEAR}-${dateStr}`),
+        weekText: '0️⃣',
+        stateText: 'break',
+        emoji: '🌴',
+        term: 2,
+      });
     },
   );
 
   test('odd - term 3', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-06-30`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('1️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 3)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('odd');
-    expect(oeDecoratorNode.textContent).toEqual('\u261d'); // 1 finger up
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-06-30`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: 3,
+    });
   });
 
   test('even - term 3', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-07-07`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('2️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 3)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('even');
-    expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-07-07`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 3,
+    });
   });
 
   test('break - term 3', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-09-08`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('0️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 3)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('break');
-    expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-09-08`),
+      weekText: '0️⃣',
+      stateText: 'break',
+      emoji: '🌴',
+      term: 3,
+    });
   });
 
   test('odd - term 4', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-09-15`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('1️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 4)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('odd');
-    expect(oeDecoratorNode.textContent).toEqual('\u261d'); // 1 finger up
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-09-15`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: 4,
+    });
   });
 
   test('even - term 4', () => {
-    const currentYear = new Date().getFullYear();
-    const testDate = new Date(`${currentYear}-09-22`);
-    main(testDate);
-
-    expect(weekNumberNode.textContent).toEqual('2️⃣');
-    expect(todayDateNode.textContent).toEqual(
-      `${testDate.toDateString('en-GB')} (Term 4)`,
-    );
-    expect(oddOrEvenNode.textContent).toEqual('even');
-    expect(oeDecoratorNode.textContent).toEqual('\u270c'); // 2 fingers up / peace sign
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-09-22`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 4,
+    });
   });
 
   test.each([['11-24'], ['12-01'], ['12-08'], ['12-15'], ['12-22'], ['12-31']])(
     'break - term 4 on %s',
     (dateStr) => {
-      const currentYear = new Date().getFullYear();
-      const testDate = new Date(`${currentYear}-${dateStr}`);
-      main(testDate);
-
-      expect(weekNumberNode.textContent).toEqual('0️⃣');
-      expect(todayDateNode.textContent).toEqual(
-        `${testDate.toDateString('en-GB')} (Term 4)`,
-      );
-      expect(oddOrEvenNode.textContent).toEqual('break');
-      expect(oeDecoratorNode.textContent).toEqual('🌴'); // vacation
+      expectUiState({
+        date: new Date(`${TEST_YEAR}-${dateStr}`),
+        weekText: '0️⃣',
+        stateText: 'break',
+        emoji: '🌴',
+        term: 4,
+      });
     },
   );
+
+  test('falls back to default term info when override lacks data', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-06`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: '?',
+      options: { termsDataOverride: [] },
+    });
+  });
+
+  test('handles null term data override gracefully', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-13`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: '?',
+      options: { termsDataOverride: null },
+    });
+  });
+
+  test('normalizes malformed custom term data', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-13`),
+      weekText: '2️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 'X',
+      options: {
+        termsDataOverride: [
+          { term: 'X', start: undefined, end: undefined, break: 'invalid' },
+        ],
+      },
+    });
+  });
+
+  test('uses last term end when break metadata is missing', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-12-31`),
+      weekText: '1️⃣0️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 'Final',
+      options: {
+        termsDataOverride: [
+          { term: 'Term 1', start: 1, end: 10, break: [] },
+          { term: 'Final', start: 37, end: 46, break: [] },
+        ],
+      },
+    });
+  });
+
+  test('falls back to current week number when last term lacks end', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-12-31`),
+      weekText: '0️⃣',
+      stateText: 'even',
+      emoji: '✌',
+      term: 'Term 1',
+      options: {
+        termsDataOverride: [
+          { term: 'Term 1', start: 1, end: 10, break: [] },
+          { term: 'Final', start: 37, break: [] },
+        ],
+      },
+    });
+  });
+
+  test('defaults term label when metadata omits term name', () => {
+    expectUiState({
+      date: new Date(`${TEST_YEAR}-01-06`),
+      weekText: '1️⃣',
+      stateText: 'odd',
+      emoji: '☝',
+      term: '?',
+      options: {
+        termsDataOverride: [{ start: 1, end: 10, break: [] }],
+      },
+    });
+  });
 });
 
 describe('kickoff', () => {
@@ -228,13 +338,14 @@ describe('kickoff', () => {
     expect(refresh).toBeCalledTimes(1); // once at init only
   });
 
-  test('visibilityState: hidden', async () => {
+  test('errors bubble to reportError without crashing', async () => {
     const error = new Error('this is an error');
-    refresh.mockImplementation(() => {
+    refresh.mockImplementationOnce(() => {
       throw error;
     });
-    expect(() => start()).toThrow(error);
-    expect(reportError).toHaveBeenCalled();
+
+    expect(() => start()).not.toThrow();
+    expect(reportError).toHaveBeenCalledWith(error);
   });
 });
 
@@ -257,12 +368,23 @@ describe('setupAddToHomeScreen', () => {
 
     const installPwaButtonNode = document.getElementById('install-pwa');
     getAddToHomeScreenProperties.mockReturnValue({
-      isStandalone: false,
+      isStandAlone: false,
       isDesktop: false,
     });
 
     setupAddToHomeScreen();
     expect(installPwaButtonNode.classList).not.toContain('hidden');
+  });
+
+  test('skips setup when install button is missing', () => {
+    document.body.innerHTML = '';
+
+    getAddToHomeScreenProperties.mockReturnValue({
+      isStandAlone: false,
+      isDesktop: false,
+    });
+
+    expect(() => setupAddToHomeScreen()).not.toThrow();
   });
 
   test('standalone - hidden install button', () => {
@@ -287,7 +409,7 @@ describe('setupAddToHomeScreen', () => {
 
     const installPwaButtonNode = document.getElementById('install-pwa');
     getAddToHomeScreenProperties.mockReturnValue({
-      isStandalone: false,
+      isStandAlone: false,
       isDesktop: true,
     });
 
@@ -312,7 +434,7 @@ describe('setupAddToHomeScreen', () => {
       show: mockShow,
     });
     getAddToHomeScreenProperties.mockReturnValue({
-      isStandalone: false,
+      isStandAlone: false,
       isDesktop: false,
     });
 

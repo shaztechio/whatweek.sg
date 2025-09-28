@@ -15,8 +15,9 @@ import {
 import termsData2025 from '../src/js/terms.2025';
 
 test('getFirstDateOfTheYear', () => {
-  const firstDate = getFirstDateOfTheYear();
-  expect(firstDate.getFullYear()).toBe(new Date().getFullYear());
+  const referenceDate = new Date('2025-06-15T10:00:00Z');
+  const firstDate = getFirstDateOfTheYear(referenceDate);
+  expect(firstDate.getFullYear()).toBe(2025);
   expect(firstDate.getMonth()).toBe(0);
   expect(firstDate.getDate()).toBe(1);
 });
@@ -33,11 +34,19 @@ test('updateTextContents', () => {
 
 test('reportError', () => {
   const error = new Error('Test error');
+  const originalAlert = window.alert;
   window.alert = vi.fn();
-  expect(() => reportError(error)).toThrow('Test error');
+  const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+  reportError(error);
+
   expect(window.alert).toHaveBeenCalledWith(
     `uh oh there was an error in the code (sorry!) or you are probably not running a modern browser:\n\n${error}`,
   );
+  expect(consoleSpy).toHaveBeenCalledWith(error);
+
+  consoleSpy.mockRestore();
+  window.alert = originalAlert;
 });
 
 test('createAddToHomeScreenComponent', () => {
@@ -73,64 +82,38 @@ describe('getWeekNumber', () => {
   test('last week of the year', () => {
     const date = new Date('2025-12-31');
     const weekNumber = getWeekNumber(date);
-    expect(weekNumber).toEqual(53);
+    expect(weekNumber).toEqual(1);
   });
 });
 
 describe('calculateWeekOffset', () => {
-  test('2025', () => {
-    const date = new Date('2025-01-02'); // 2nd Jan 2025 is a Thursday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(1);
-  });
+  const scenarios = [
+    [1, '2025-06-01'],
+    [1, '2026-06-01'],
+    [0, '2027-06-01'],
+    [0, '2028-06-01'],
+    [0, '2029-06-01'],
+    [0, '2030-06-01'],
+    [1, '2031-06-01'],
+    [1, '2032-06-01'],
+  ];
 
-  test('2026', () => {
-    const date = new Date('2026-01-02'); // 2nd Jan 2026 is a Friday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(1);
-  });
-
-  test('2027', () => {
-    const date = new Date('2027-01-02'); // 2nd Jan 2027 is a Saturday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(0);
-  });
-
-  test('2028', () => {
-    const date = new Date('2028-01-02'); // 2nd Jan 2028 is a Sunday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(0);
-  });
-
-  test('2029', () => {
-    const date = new Date('2029-01-02'); // 2nd Jan 2029 is a Tuesday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(0);
-  });
-
-  test('2030', () => {
-    const date = new Date('2030-01-02'); // 2nd Jan 2030 is a Wednesday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(0);
-  });
-
-  test('2031', () => {
-    const date = new Date('2031-01-02'); // 2nd Jan 2031 is a Thursday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(1);
-  });
-
-  test('2032', () => {
-    const date = new Date('2032-01-02'); // 2nd Jan 2032 is a Friday
-    vi.setSystemTime(date);
-    expect(calculateWeekOffset()).toEqual(1);
-  });
+  test.each(scenarios)(
+    'returns %i for reference date %s',
+    (expected, dateString) => {
+      expect(calculateWeekOffset(new Date(`${dateString}T00:00:00Z`))).toEqual(
+        expected,
+      );
+    },
+  );
 });
 
 test('numberToEmoji', () => {
   expect(numberToEmoji(123)).toEqual('1️⃣2️⃣3️⃣');
   expect(numberToEmoji(456)).toEqual('4️⃣5️⃣6️⃣');
   expect(numberToEmoji(7890)).toEqual('7️⃣8️⃣9️⃣0️⃣');
+  expect(numberToEmoji(-12)).toEqual('-1️⃣2️⃣');
+  expect(numberToEmoji('N/A')).toEqual('N/A');
 });
 
 test('millisecondsUntilMidnight', () => {
@@ -207,43 +190,26 @@ describe('getAddToHomeScreenProperties', () => {
 });
 
 describe('getTermWeekInfo', () => {
-  test('term 1', () => {
-    expect(getTermWeekInfo(1)).toEqual(termsData2025[0]);
-    expect(getTermWeekInfo(5)).toEqual(termsData2025[0]);
-    expect(getTermWeekInfo(10)).toEqual(termsData2025[0]);
-    // break
-    expect(getTermWeekInfo(11)).toEqual(termsData2025[0]);
+  test.each([1, 5, 10, 11])('term 1 includes week %i', (week) => {
+    expect(getTermWeekInfo(week, termsData2025)).toEqual(termsData2025[0]);
   });
 
-  test('term 2', () => {
-    expect(getTermWeekInfo(12)).toEqual(termsData2025[1]);
-    expect(getTermWeekInfo(17)).toEqual(termsData2025[1]);
-    expect(getTermWeekInfo(21)).toEqual(termsData2025[1]);
-    // break
-    expect(getTermWeekInfo(22)).toEqual(termsData2025[1]);
-    expect(getTermWeekInfo(23)).toEqual(termsData2025[1]);
-    expect(getTermWeekInfo(24)).toEqual(termsData2025[1]);
-    expect(getTermWeekInfo(25)).toEqual(termsData2025[1]);
+  test.each([12, 17, 21, 22, 23, 24, 25])('term 2 includes week %i', (week) => {
+    expect(getTermWeekInfo(week, termsData2025)).toEqual(termsData2025[1]);
   });
 
-  test('term 3', () => {
-    expect(getTermWeekInfo(26)).toEqual(termsData2025[2]);
-    expect(getTermWeekInfo(30)).toEqual(termsData2025[2]);
-    expect(getTermWeekInfo(35)).toEqual(termsData2025[2]);
-    // break
-    expect(getTermWeekInfo(36)).toEqual(termsData2025[2]);
+  test.each([26, 30, 35, 36])('term 3 includes week %i', (week) => {
+    expect(getTermWeekInfo(week, termsData2025)).toEqual(termsData2025[2]);
   });
 
-  test('term 4', () => {
-    expect(getTermWeekInfo(37)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(41)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(46)).toEqual(termsData2025[3]);
-    // break
-    expect(getTermWeekInfo(47)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(48)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(49)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(50)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(51)).toEqual(termsData2025[3]);
-    expect(getTermWeekInfo(52)).toEqual(termsData2025[3]);
+  test.each([37, 41, 46, 47, 48, 49, 50, 51, 52])(
+    'term 4 includes week %i',
+    (week) => {
+      expect(getTermWeekInfo(week, termsData2025)).toEqual(termsData2025[3]);
+    },
+  );
+
+  test('returns undefined when no term matches', () => {
+    expect(getTermWeekInfo(0, termsData2025)).toBeUndefined();
   });
 });

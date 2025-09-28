@@ -12,25 +12,55 @@ import {
   createAddToHomeScreenComponent,
   getAddToHomeScreenProperties,
 } from './utils';
+import { getTermsDataForYear } from './terms';
 
 /**
  * Main function.
  *
  * @param {Date} testDate the date that is set to "today" (if set, it's for test purposes). Defaults to now.
+ * @param {Object} options optional overrides used mainly for tests
+ * @param {Array} options.termsDataOverride pre-loaded term data to use instead of loading by year
  */
-export function main(testDate) {
+export function main(testDate, options = {}) {
   const today = testDate ?? new Date();
-  const todayDateString = today.toDateString('en-GB');
+  const todayDateString = today.toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'Asia/Singapore',
+  });
 
-  const weekOffset = calculateWeekOffset();
+  const { termsDataOverride } = options;
+  const rawTermsData =
+    termsDataOverride !== undefined
+      ? termsDataOverride
+      : getTermsDataForYear(today.getFullYear());
+  const termsData = rawTermsData ?? [];
+
+  const weekOffset = calculateWeekOffset(today);
   const weekNumber = getWeekNumber(today);
   const todayWeekNumber = weekNumber - weekOffset;
-  const termInfo = getTermWeekInfo(todayWeekNumber);
-  const isBreak = termInfo.break.includes(todayWeekNumber);
+  const lastTerm = termsData.at(-1);
+  const weekLookupNumber =
+    weekNumber === 1 && today.getMonth() === 11
+      ? (lastTerm?.break?.slice(-1)[0] ?? lastTerm?.end ?? todayWeekNumber)
+      : todayWeekNumber;
+  const rawTermInfo = getTermWeekInfo(weekLookupNumber, termsData) ??
+    termsData[0] ?? { term: '?', start: 1, end: 1, break: [] };
+  const termInfo = {
+    term: rawTermInfo.term ?? '?',
+    start: rawTermInfo.start ?? 1,
+    end: rawTermInfo.end ?? rawTermInfo.start ?? 1,
+    break: Array.isArray(rawTermInfo.break) ? rawTermInfo.break : [],
+  };
+  const isPreTermBreak = todayWeekNumber <= 0 && today.getMonth() === 0;
+  const isBreak =
+    isPreTermBreak || termInfo.break.includes(weekLookupNumber) === true;
 
   // adjust week number for new terms and breaks
-  let adjustedWeekNumber = todayWeekNumber - termInfo.start + 1;
-  if (isBreak) {
+  let adjustedWeekNumber = weekLookupNumber - termInfo.start + 1;
+  if (isBreak || adjustedWeekNumber < 1) {
     adjustedWeekNumber = 0;
   }
 
@@ -125,15 +155,22 @@ export function setupAddToHomeScreen() {
 
     const hideInstallButton = isStandAlone || isDesktop;
     posthog.capture('add_to_homescreen', { isDesktop, isStandAlone });
-    if (hideInstallButton) {
-      document.getElementById('install-pwa').classList.add('hidden');
-    } else {
-      document.getElementById('install-pwa').classList.remove('hidden');
-      document.getElementById('install-pwa').addEventListener('click', () => {
-        addToHomeScreenInstance.show('en');
-        posthog.capture('install_button_pressed');
-      });
+
+    const installButton = document.getElementById('install-pwa');
+    if (!installButton) {
+      return;
     }
+
+    if (hideInstallButton) {
+      installButton.classList.add('hidden');
+      return;
+    }
+
+    installButton.classList.remove('hidden');
+    installButton.addEventListener('click', () => {
+      addToHomeScreenInstance.show('en');
+      posthog.capture('install_button_pressed');
+    });
   });
 }
 

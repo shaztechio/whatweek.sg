@@ -1,14 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import * as addToHomeScreen from '../assets/vendor/add-to-homescreen/add-to-homescreen.min';
-import termsData2025 from './terms.2025';
 
 /**
  * Gets the first day of the year, UTC.
  *
- * @returns {Date} Jan 01 of the current year, UTC
+ * @param {Date} referenceDate the date whose year should be used
+ * @returns {Date} Jan 01 of the reference year, UTC
  */
-export function getFirstDateOfTheYear() {
-  return new Date(new Date().getFullYear(), 0, 1);
+export function getFirstDateOfTheYear(referenceDate = new Date()) {
+  return new Date(referenceDate.getFullYear(), 0, 1);
 }
 
 /**
@@ -26,7 +26,7 @@ export function getWeekNumber(aDate) {
   // calculate the date of the nearest Thursday
   clonedDate.setDate(clonedDate.getDate() + 4 - currentDayNumber);
 
-  const yearStart = getFirstDateOfTheYear();
+  const yearStart = getFirstDateOfTheYear(clonedDate);
   const millisecondsInADay = 86400000;
 
   // calculate full weeks to nearest Thursday (add 1 to account for the current day)
@@ -41,23 +41,24 @@ export function getWeekNumber(aDate) {
  * Gets the term information for a given week number.
  *
  * @param {number} weekNo - The ISO week number to get term info for
- * @returns {Object} The term information object containing:
+ * @param {Array} termsData - The full set of term definitions to search
+ * @returns {Object|undefined} The term information object containing:
  *   - term: {number} The term number (1-4)
  *   - start: {number} The starting week number of the term
  *   - end: {number} The ending week number of the term
  *   - break: {number[]} Array of week numbers that are breaks in this term
  */
-export function getTermWeekInfo(weekNo) {
-  // for adjusting week number for new terms and breaks
+export function getTermWeekInfo(weekNo, termsData = []) {
+  if (!Array.isArray(termsData) || termsData.length === 0) {
+    return undefined;
+  }
 
-  const termInfo = termsData2025.find((term) => {
+  return termsData.find((term) => {
     return (
       (weekNo >= term.start && weekNo <= term.end) ||
       term.break.includes(weekNo)
     );
   });
-
-  return termInfo;
 }
 
 /**
@@ -85,7 +86,9 @@ export function reportError(err) {
       err
     }`,
   );
-  throw err;
+  // surface the error for diagnostics without crashing the UI loop
+  // eslint-disable-next-line no-console
+  console.error(err);
 }
 
 /**
@@ -93,8 +96,8 @@ export function reportError(err) {
  *
  * See  https://en.wikipedia.org/wiki/Academic_year#:~:text=Term%201%20starts%20the%20day%20immediately%20after%20New%20Year%27s%20Day.%20If%20the%20first%20school%20day%20is%20a%20Thursday%20or%20a%20Friday%2C%20it%20is%20not%20counted%20as%20a%20school%20week.
  */
-export function calculateWeekOffset() {
-  const startOfTheYear = getFirstDateOfTheYear(); // 1st Jan
+export function calculateWeekOffset(referenceDate = new Date()) {
+  const startOfTheYear = getFirstDateOfTheYear(referenceDate); // 1st Jan
   startOfTheYear.setDate(startOfTheYear.getDate() + 1); // now set to next day 2nd Jan - when school starts
 
   // remember, 0 is Sun, 1 is Mon, and so on
@@ -113,22 +116,27 @@ export function calculateWeekOffset() {
  * @returns {String} the emoji number string
  */
 export function numberToEmoji(num) {
-  const digitEmojis = [
-    '0️⃣',
-    '1️⃣',
-    '2️⃣',
-    '3️⃣',
-    '4️⃣',
-    '5️⃣',
-    '6️⃣',
-    '7️⃣',
-    '8️⃣',
-    '9️⃣',
-  ];
+  const digitEmojiMap = {
+    0: '0️⃣',
+    1: '1️⃣',
+    2: '2️⃣',
+    3: '3️⃣',
+    4: '4️⃣',
+    5: '5️⃣',
+    6: '6️⃣',
+    7: '7️⃣',
+    8: '8️⃣',
+    9: '9️⃣',
+  };
 
   return String(num)
     .split('')
-    .map((digit) => digitEmojis[parseInt(digit, 10)])
+    .map((char) => {
+      if (/^\d$/.test(char)) {
+        return digitEmojiMap[parseInt(char, 10)];
+      }
+      return char;
+    })
     .join('');
 }
 
