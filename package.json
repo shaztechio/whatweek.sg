@@ -57,7 +57,7 @@
     "postcss": "^8.5.1",
     "postcss-nesting": "^13.0.2",
     "prettier": "^3.6.2",
-    "vite": "7.0.4",
+    "vite": "7.1.9",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-pwa": "^1.0.3",
     "vitest": "^3.2.4"
