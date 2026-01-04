@@ -1,14 +1,24 @@
 import { describe, expect, test } from 'vitest';
 import { getTermsDataForYear, getAvailableTermYears } from '../src/js/terms';
 import termsData2025 from '../src/js/terms.2025';
+import termsData2026 from '../src/js/terms.2026';
+import termsData2027 from '../src/js/terms.2027';
 
 describe('getTermsDataForYear', () => {
   test('returns data for matching year', () => {
     expect(getTermsDataForYear(2025)).toBe(termsData2025);
   });
 
+  test('returns data for 2026', () => {
+    expect(getTermsDataForYear(2026)).toBe(termsData2026);
+  });
+
+  test('returns data for 2027', () => {
+    expect(getTermsDataForYear(2027)).toBe(termsData2027);
+  });
+
   test('falls back to closest available year when future data missing', () => {
-    expect(getTermsDataForYear(2026)).toBe(termsData2025);
+    expect(getTermsDataForYear(2028)).toBe(termsData2027);
   });
 
   test('falls back to earliest available year when requesting earlier data', () => {
