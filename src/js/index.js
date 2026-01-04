@@ -39,10 +39,15 @@ export function setupCopyEmail() {
     try {
       await navigator.clipboard.writeText(email);
       // eslint-disable-next-line no-alert
-      alert('Email copied!');
+      window?.alert('Email copied!');
     } catch {
+      const errorMessage = `Copy failed — email is: ${email}`;
       // eslint-disable-next-line no-alert
-      alert(`Copy failed — email is: ${email}`);
+      window?.alert(errorMessage);
+      if (typeof window !== 'undefined') {
+        // eslint-disable-next-line no-console
+        console.error(errorMessage);
+      }
     }
   });
 }
