@@ -3,6 +3,7 @@ import {
   test,
   describe,
   beforeEach,
+  afterEach,
   beforeAll,
   afterAll,
   vi,
@@ -398,6 +399,106 @@ describe.each(TEST_YEARS)('main (year %i)', (testYear) => {
         termsDataOverride: [{ start: 1, end: 10, break: [] }],
       },
     });
+  });
+});
+
+describe('query parameter date override', () => {
+  let weekNumberNode;
+  let todayDateNode;
+  let oddOrEvenNode;
+  let originalLocation;
+
+  beforeEach(() => {
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    document.body.innerHTML = `
+      <div class="week-number"></div>
+      <div class="today-date"></div>
+      <div class="odd-or-even"></div>
+      <div class="oe-decorator"></div>
+    `;
+    weekNumberNode = document.querySelector('.week-number');
+    todayDateNode = document.querySelector('.today-date');
+    oddOrEvenNode = document.querySelector('.odd-or-even');
+
+    // Save original location
+    originalLocation = window.location;
+  });
+
+  afterEach(() => {
+    // Restore original location
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+      writable: true,
+    });
+  });
+
+  const mockLocationSearch = (search) => {
+    Object.defineProperty(window, 'location', {
+      value: { ...originalLocation, search },
+      writable: true,
+    });
+  };
+
+  test('uses date from query parameter when testDate is not provided', () => {
+    // Mock URL with date query param for March 16, 2026 (week 11, Term 1 break)
+    mockLocationSearch('?date=2026-03-16');
+
+    main();
+
+    // Verify the date from query param is used (not system time of Jan 1)
+    expect(todayDateNode.textContent).toContain('16 Mar 2026');
+    expect(oddOrEvenNode.textContent).toEqual('break');
+  });
+
+  test('uses date from query parameter with full ISO 8601 format', () => {
+    // Mock URL with full ISO 8601 datetime for March 23, 2026 (Term 2, week 1)
+    mockLocationSearch('?date=2026-03-23T10:30:00');
+
+    main();
+
+    // Verify the date from query param is used
+    expect(todayDateNode.textContent).toContain('23 Mar 2026');
+    expect(todayDateNode.textContent).toContain('Term 2');
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+  });
+
+  test('testDate parameter takes precedence over query parameter', () => {
+    // Mock URL with date query param for Term 2
+    mockLocationSearch('?date=2026-03-16');
+
+    // But pass testDate for Term 1, week 1 (Jan 5, 2026)
+    const testDate = new Date('2026-01-05');
+    main(testDate);
+
+    expect(todayDateNode.textContent).toContain('Term 1');
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+  });
+
+  test('falls back to current date when query parameter is invalid', () => {
+    mockLocationSearch('?date=not-a-valid-date');
+
+    main();
+
+    // Should use current system time (2026-01-01) which is pre-term break
+    expect(todayDateNode.textContent).toContain('Term 1');
+  });
+
+  test('falls back to current date when no query parameter is present', () => {
+    mockLocationSearch('');
+
+    main();
+
+    // Should use current system time (2026-01-01)
+    expect(todayDateNode.textContent).toContain('Term 1');
+  });
+
+  test('ignores other query parameters', () => {
+    mockLocationSearch('?foo=bar&baz=qux');
+
+    main();
+
+    // Should use current system time (2026-01-01)
+    expect(todayDateNode.textContent).toContain('Term 1');
   });
 });
 

@@ -813,3 +813,4 @@ caprover.tar
 # Playwright artifacts
 test-results/
 playwright-report/
+dev-dist

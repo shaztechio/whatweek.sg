@@ -35,7 +35,18 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
  * @param {Array} options.termsDataOverride pre-loaded term data to use instead of loading by year
  */
 export function main(testDate, options = {}) {
-  const today = testDate ?? new Date();
+  let today = testDate;
+  if (!today && typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateParam = urlParams.get('date');
+    if (dateParam) {
+      const parsedDate = new Date(dateParam);
+      if (!Number.isNaN(parsedDate.getTime())) {
+        today = parsedDate;
+      }
+    }
+  }
+  today = today ?? new Date();
   const todayDateString = today.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: 'numeric',
