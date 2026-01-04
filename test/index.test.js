@@ -8,7 +8,12 @@ import {
   afterAll,
   vi,
 } from 'vitest';
-import { main, start, setupAddToHomeScreen } from '../src/js/index';
+import {
+  main,
+  start,
+  setupAddToHomeScreen,
+  setupCopyEmail,
+} from '../src/js/index';
 import {
   refresh,
   reportError,
@@ -543,6 +548,54 @@ describe('kickoff', () => {
 
     expect(() => start()).not.toThrow();
     expect(reportError).toHaveBeenCalledWith(error);
+  });
+});
+
+describe('setupCopyEmail', () => {
+  beforeEach(() => {
+    window.alert.mockClear();
+  });
+
+  test('skips setup when copyEmail button is missing', () => {
+    document.body.innerHTML = '';
+
+    expect(() => setupCopyEmail()).not.toThrow();
+  });
+
+  test('copies email to clipboard on click success', async () => {
+    document.body.innerHTML = '<button id="copyEmail"></button>';
+
+    const mockWriteText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, {
+      clipboard: { writeText: mockWriteText },
+    });
+
+    setupCopyEmail();
+
+    const btn = document.getElementById('copyEmail');
+    await btn.click();
+
+    expect(mockWriteText).toHaveBeenCalledWith('contact@whatweek.sg');
+    expect(window.alert).toHaveBeenCalledWith('Email copied!');
+  });
+
+  test('shows fallback alert when clipboard fails', async () => {
+    document.body.innerHTML = '<button id="copyEmail"></button>';
+
+    const mockWriteText = vi.fn().mockRejectedValue(new Error('fail'));
+    Object.assign(navigator, {
+      clipboard: { writeText: mockWriteText },
+    });
+
+    setupCopyEmail();
+
+    const btn = document.getElementById('copyEmail');
+    await btn.click();
+
+    expect(mockWriteText).toHaveBeenCalledWith('contact@whatweek.sg');
+    expect(window.alert).toHaveBeenCalledWith(
+      'Copy failed — email is: contact@whatweek.sg',
+    );
   });
 });
 

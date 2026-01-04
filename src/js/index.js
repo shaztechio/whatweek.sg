@@ -27,6 +27,26 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
 }
 /* v8 ignore stop */
 
+export function setupCopyEmail() {
+  const email = ['contact', 'whatweek.sg'].join('@');
+  const btn = document.getElementById('copyEmail');
+
+  if (!btn) {
+    return;
+  }
+
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      // eslint-disable-next-line no-alert
+      alert('Email copied!');
+    } catch {
+      // eslint-disable-next-line no-alert
+      alert(`Copy failed — email is: ${email}`);
+    }
+  });
+}
+
 /**
  * Main function.
  *
@@ -198,5 +218,6 @@ export function setupAddToHomeScreen() {
   });
 }
 
+setupCopyEmail();
 setupAddToHomeScreen();
 start();

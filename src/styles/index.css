@@ -296,3 +296,9 @@ button {
     display: inline-block;
   }
 }
+
+#copyEmail {
+  cursor: pointer;
+  font-size: 0.75em;
+  margin-left: 0.5em;
+}
