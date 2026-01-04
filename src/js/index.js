@@ -27,6 +27,70 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
 }
 /* v8 ignore stop */
 
+function stripHTML(value = '') {
+  return value.replace(/<[^>]*>/g, '');
+}
+
+function escapeHTML(value = '') {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/**
+ * Displays an alert using <dialog> if supported, otherwise falls back to window.alert
+ *
+ * @param {Object} options
+ * @param {string} [options.title="Alert"]
+ * @param {string} options.message - Text or HTML
+ * @param {string} [options.okText="OK"]
+ * @param {boolean} [options.allowHTML=false]
+ */
+export function alertDialog({
+  title = 'Alert',
+  message,
+  okText = 'OK',
+  allowHTML = false,
+} = {}) {
+  if (typeof HTMLDialogElement === 'undefined') {
+    // eslint-disable-next-line no-alert
+    window.alert(stripHTML(message));
+    return;
+  }
+
+  let dialog = document.getElementById('alert-dialog');
+
+  if (!dialog) {
+    dialog = document.createElement('dialog');
+    dialog.id = 'alert-dialog';
+    dialog.setAttribute('role', 'alertdialog');
+
+    dialog.innerHTML = `
+      <form method="dialog" class="alert-dialog">
+        <h2 class="alert-title"></h2>
+        <div class="alert-message"></div>
+        <menu>
+          <button value="ok" autofocus></button>
+        </menu>
+      </form>
+    `;
+
+    document.body.appendChild(dialog);
+  }
+
+  dialog.querySelector('.alert-title').textContent = title;
+
+  const messageEl = dialog.querySelector('.alert-message');
+  messageEl.innerHTML = allowHTML ? message : escapeHTML(message);
+
+  dialog.querySelector('button').textContent = okText;
+
+  if (!dialog.open) {
+    dialog.showModal();
+  }
+}
+
 export function setupCopyEmail() {
   const email = ['contact', 'whatweek.sg'].join('@');
   const btn = document.getElementById('copyEmail');
@@ -38,8 +102,13 @@ export function setupCopyEmail() {
   btn.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(email);
-      // eslint-disable-next-line no-alert
-      window?.alert('Email copied!');
+
+      // window?.alert('Email copied!');
+      alertDialog({
+        title: 'Alamak',
+        message: 'Email kopi ☕️ to clipboard. Now can paste.',
+        okText: 'OK Can',
+      });
     } catch {
       const errorMessage = `Copy failed — email is: ${email}`;
       // eslint-disable-next-line no-alert

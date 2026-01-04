@@ -13,6 +13,7 @@ import {
   start,
   setupAddToHomeScreen,
   setupCopyEmail,
+  alertDialog,
 } from '../src/js/index';
 import {
   refresh,
@@ -576,7 +577,15 @@ describe('setupCopyEmail', () => {
     await btn.click();
 
     expect(mockWriteText).toHaveBeenCalledWith('contact@whatweek.sg');
-    expect(window.alert).toHaveBeenCalledWith('Email copied!');
+
+    // Check that the dialog was created and shown
+    const dialog = document.getElementById('alert-dialog');
+    expect(dialog).not.toBeNull();
+    expect(dialog.querySelector('.alert-title').textContent).toBe('Alamak');
+    expect(dialog.querySelector('.alert-message').textContent).toBe(
+      'Email kopi ☕️ to clipboard. Now can paste.',
+    );
+    expect(dialog.querySelector('button').textContent).toBe('OK Can');
   });
 
   test('shows fallback alert when clipboard fails', async () => {
@@ -596,6 +605,105 @@ describe('setupCopyEmail', () => {
     expect(window.alert).toHaveBeenCalledWith(
       'Copy failed — email is: contact@whatweek.sg',
     );
+  });
+});
+
+describe('alertDialog', () => {
+  const originalCreateElement = document.createElement.bind(document);
+
+  beforeEach(() => {
+    window.alert.mockClear();
+    document.body.innerHTML = '';
+
+    // Mock createElement to add showModal to dialog elements
+    document.createElement = vi.fn((tagName) => {
+      const element = originalCreateElement(tagName);
+      if (tagName === 'dialog') {
+        element.showModal = vi.fn();
+        element.open = false;
+      }
+      return element;
+    });
+  });
+
+  afterEach(() => {
+    document.createElement = originalCreateElement;
+  });
+
+  test('falls back to window.alert when HTMLDialogElement is undefined', () => {
+    const originalHTMLDialogElement = window.HTMLDialogElement;
+    delete window.HTMLDialogElement;
+
+    alertDialog({ message: 'Test message' });
+
+    expect(window.alert).toHaveBeenCalledWith('Test message');
+
+    window.HTMLDialogElement = originalHTMLDialogElement;
+  });
+
+  test('strips HTML tags when falling back to window.alert', () => {
+    const originalHTMLDialogElement = window.HTMLDialogElement;
+    delete window.HTMLDialogElement;
+
+    alertDialog({ message: '<b>Bold</b> and <i>italic</i> text' });
+
+    expect(window.alert).toHaveBeenCalledWith('Bold and italic text');
+
+    window.HTMLDialogElement = originalHTMLDialogElement;
+  });
+
+  test('creates dialog with default values', () => {
+    alertDialog({ message: 'Default test' });
+
+    const dialog = document.getElementById('alert-dialog');
+    expect(dialog).not.toBeNull();
+    expect(dialog.querySelector('.alert-title').textContent).toBe('Alert');
+    expect(dialog.querySelector('.alert-message').textContent).toBe(
+      'Default test',
+    );
+    expect(dialog.querySelector('button').textContent).toBe('OK');
+    expect(dialog.showModal).toHaveBeenCalled();
+  });
+
+  test('allows HTML content when allowHTML is true', () => {
+    alertDialog({
+      message: '<strong>Bold</strong>',
+      allowHTML: true,
+    });
+
+    const dialog = document.getElementById('alert-dialog');
+    expect(dialog.querySelector('.alert-message').innerHTML).toBe(
+      '<strong>Bold</strong>',
+    );
+  });
+
+  test('escapes HTML content when allowHTML is false', () => {
+    alertDialog({
+      message: '<script>alert("xss")</script>',
+      allowHTML: false,
+    });
+
+    const dialog = document.getElementById('alert-dialog');
+    expect(dialog.querySelector('.alert-message').innerHTML).toBe(
+      '&lt;script&gt;alert("xss")&lt;/script&gt;',
+    );
+  });
+
+  test('reuses existing dialog element', () => {
+    alertDialog({ message: 'First call' });
+
+    const dialog = document.getElementById('alert-dialog');
+    dialog.open = true; // Simulate dialog is already open
+
+    alertDialog({ message: 'Second call' });
+
+    const dialogs = document.querySelectorAll('#alert-dialog');
+    expect(dialogs.length).toBe(1);
+    expect(document.querySelector('.alert-message').textContent).toBe(
+      'Second call',
+    );
+    // showModal should only be called once (first call, not second when already open)
+    expect(dialog.showModal).toHaveBeenCalledTimes(1);
   });
 });
 

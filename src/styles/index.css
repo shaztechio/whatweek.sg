@@ -302,3 +302,36 @@ button {
   font-size: 0.75em;
   margin-left: 0.5em;
 }
+
+.alert-dialog {
+  text-align: center;
+}
+
+.alert-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.alert-message {
+  margin-bottom: 2rem;
+}
+
+.alert-dialog menu {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.alert-dialog button {
+  padding: 0.4rem 0.75rem;
+}
+
+dialog {
+  width: auto;
+  max-width: 200px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #dedede;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  animation: scale-in 0.4s ease-out;
+}
