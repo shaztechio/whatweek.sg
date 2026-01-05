@@ -60,7 +60,7 @@
     "prettier": "^3.6.2",
     "vite": "7.1.12",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-pwa": "^1.0.3",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^3.2.4"
   },
   "dependencies": {
