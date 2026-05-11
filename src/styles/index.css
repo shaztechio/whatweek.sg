@@ -70,6 +70,12 @@ a {
   font-family: Apple Color Emoji
 }
 
+.monday-indicator {
+  display: block;
+  font-size: 0.4em;
+  text-align: center;
+}
+
 .button-decorator {
   display: inline;
 }
@@ -148,6 +154,7 @@ button {
     font-size: 0.5em;
   }
   .oe-decorator,
+  .monday-indicator,
   .button-decorator,
   .description-decorator,
   .footer-decorator {
@@ -174,6 +181,7 @@ button {
     font-size: 1em;
   }
   .oe-decorator,
+  .monday-indicator,
   .button-decorator,
   .description-decorator,
   .footer-decorator {
@@ -206,6 +214,9 @@ button {
   .oe-decorator,
   .button-decorator{
     display: inline-block;
+  }
+  .monday-indicator {
+    display: block;
   }
   .description-decorator,
   .footer-decorator {
@@ -264,6 +275,9 @@ button {
   .button-decorator{
     display: inline-block;
   }
+  .monday-indicator {
+    display: block;
+  }
   .description-decorator,
   .footer-decorator {
     display: inline-block;
@@ -290,6 +304,9 @@ button {
   .oe-decorator,
   .button-decorator{
     display: inline-block;
+  }
+  .monday-indicator {
+    display: block;
   }
   .description-decorator,
   .footer-decorator {

@@ -92,6 +92,42 @@ export function reportError(err) {
 }
 
 /**
+ * Returns the day of week (0=Sun … 6=Sat) in Asia/Singapore time.
+ *
+ * @param {Date} date
+ * @returns {number}
+ */
+export function getSingaporeDayOfWeek(date) {
+  const short = date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    timeZone: 'Asia/Singapore',
+  });
+  return { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[short];
+}
+
+/**
+ * On Saturday or Sunday in SGT, advance to the upcoming Monday so callers
+ * can show next week's info. On any other day returns the same date unchanged.
+ *
+ * @param {Date} date
+ * @returns {Date}
+ */
+export function getNextWeekReferenceDate(date) {
+  const sgDay = getSingaporeDayOfWeek(date);
+  if (sgDay === 6) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + 2);
+    return d;
+  }
+  if (sgDay === 0) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + 1);
+    return d;
+  }
+  return date;
+}
+
+/**
  * Calculate the week offset based on the Singapore school system.
  *
  * See  https://en.wikipedia.org/wiki/Academic_year#:~:text=Term%201%20starts%20the%20day%20immediately%20after%20New%20Year%27s%20Day.%20If%20the%20first%20school%20day%20is%20a%20Thursday%20or%20a%20Friday%2C%20it%20is%20not%20counted%20as%20a%20school%20week.

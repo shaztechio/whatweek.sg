@@ -11,6 +11,8 @@ import {
   refresh,
   createAddToHomeScreenComponent,
   getAddToHomeScreenProperties,
+  getNextWeekReferenceDate,
+  getSingaporeDayOfWeek,
 } from './utils';
 import { getTermsDataForYear } from './terms';
 
@@ -149,19 +151,23 @@ export function main(testDate, options = {}) {
     timeZone: 'Asia/Singapore',
   });
 
+  const sgDay = getSingaporeDayOfWeek(today);
+  const isWeekend = sgDay === 0 || sgDay === 6;
+  const referenceDate = getNextWeekReferenceDate(today);
+
   const { termsDataOverride } = options;
   const rawTermsData =
     termsDataOverride !== undefined
       ? termsDataOverride
-      : getTermsDataForYear(today.getFullYear());
+      : getTermsDataForYear(referenceDate.getFullYear());
   const termsData = rawTermsData ?? [];
 
-  const weekOffset = calculateWeekOffset(today);
-  const weekNumber = getWeekNumber(today);
+  const weekOffset = calculateWeekOffset(referenceDate);
+  const weekNumber = getWeekNumber(referenceDate);
   const todayWeekNumber = weekNumber - weekOffset;
   const lastTerm = termsData.at(-1);
   const weekLookupNumber =
-    weekNumber === 1 && today.getMonth() === 11
+    weekNumber === 1 && referenceDate.getMonth() === 11
       ? (lastTerm?.break?.slice(-1)[0] ?? lastTerm?.end ?? todayWeekNumber)
       : todayWeekNumber;
   const rawTermInfo = getTermWeekInfo(weekLookupNumber, termsData) ??
@@ -172,7 +178,7 @@ export function main(testDate, options = {}) {
     end: rawTermInfo.end ?? rawTermInfo.start ?? 1,
     break: Array.isArray(rawTermInfo.break) ? rawTermInfo.break : [],
   };
-  const isPreTermBreak = todayWeekNumber <= 0 && today.getMonth() === 0;
+  const isPreTermBreak = todayWeekNumber <= 0 && referenceDate.getMonth() === 0;
   const isBreak =
     isPreTermBreak || termInfo.break.includes(weekLookupNumber) === true;
 
@@ -201,6 +207,9 @@ export function main(testDate, options = {}) {
     if (isBreak) {
       text = 'break';
     }
+    if (isWeekend) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
     return text;
   });
 
@@ -212,6 +221,19 @@ export function main(testDate, options = {}) {
     }
     return text;
   });
+
+  const mondayIndicatorNodeList =
+    document.querySelectorAll('.monday-indicator');
+  updateTextContents(mondayIndicatorNodeList, () =>
+    isWeekend ? ' (Monday)' : '',
+  );
+
+  const descriptionDecoratorNodeList = document.querySelectorAll(
+    '.description-decorator',
+  );
+  updateTextContents(descriptionDecoratorNodeList, () =>
+    isWeekend ? 'Upcoming is' : 'Today is',
+  );
 }
 
 /**
