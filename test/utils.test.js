@@ -11,6 +11,8 @@ import {
   refresh,
   createAddToHomeScreenComponent,
   getAddToHomeScreenProperties,
+  getSingaporeDayOfWeek,
+  getNextWeekReferenceDate,
 } from '../src/js/utils';
 import termsData2025 from '../src/js/terms.2025';
 
@@ -211,5 +213,53 @@ describe('getTermWeekInfo', () => {
 
   test('returns undefined when no term matches', () => {
     expect(getTermWeekInfo(0, termsData2025)).toBeUndefined();
+  });
+});
+
+describe('getSingaporeDayOfWeek', () => {
+  test('Saturday returns 6', () => {
+    expect(getSingaporeDayOfWeek(new Date('2026-01-03T12:00:00+08:00'))).toBe(
+      6,
+    );
+  });
+  test('Sunday returns 0', () => {
+    expect(getSingaporeDayOfWeek(new Date('2026-01-04T12:00:00+08:00'))).toBe(
+      0,
+    );
+  });
+  test('Monday returns 1', () => {
+    expect(getSingaporeDayOfWeek(new Date('2026-01-05T12:00:00+08:00'))).toBe(
+      1,
+    );
+  });
+  test('Friday returns 5', () => {
+    expect(getSingaporeDayOfWeek(new Date('2026-01-09T12:00:00+08:00'))).toBe(
+      5,
+    );
+  });
+});
+
+describe('getNextWeekReferenceDate', () => {
+  test('Saturday advances by 2 days to Monday', () => {
+    const sat = new Date('2026-01-03T12:00:00+08:00');
+    const result = getNextWeekReferenceDate(sat);
+    expect(result).not.toBe(sat);
+    expect(result.getTime()).toBe(
+      new Date('2026-01-05T12:00:00+08:00').getTime(),
+    );
+  });
+  test('Sunday advances by 1 day to Monday', () => {
+    const sun = new Date('2026-01-04T12:00:00+08:00');
+    const result = getNextWeekReferenceDate(sun);
+    expect(result).not.toBe(sun);
+    expect(result.getTime()).toBe(
+      new Date('2026-01-05T12:00:00+08:00').getTime(),
+    );
+  });
+  test('weekday returns the same date reference unchanged', () => {
+    const mon = new Date('2026-01-05T12:00:00+08:00');
+    expect(getNextWeekReferenceDate(mon)).toBe(mon);
+    const fri = new Date('2026-01-09T12:00:00+08:00');
+    expect(getNextWeekReferenceDate(fri)).toBe(fri);
   });
 });

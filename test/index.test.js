@@ -508,6 +508,100 @@ describe('query parameter date override', () => {
   });
 });
 
+describe('weekend shows next week', () => {
+  let weekNumberNode;
+  let oddOrEvenNode;
+  let mondayIndicatorNode;
+  let descriptionDecoratorNode;
+
+  // 2026-01-05 (Mon) is school week 1, Term 1, odd.
+  // Sat 2026-01-03 and Sun 2026-01-04 should show next week (week 1, odd).
+  const SAT = new Date('2026-01-03T12:00:00+08:00');
+  const SUN = new Date('2026-01-04T12:00:00+08:00');
+  const MON = new Date('2026-01-05T12:00:00+08:00');
+
+  beforeEach(() => {
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    document.body.innerHTML = `
+      <div class="week-number"></div>
+      <div class="today-date"></div>
+      <div class="odd-or-even"></div>
+      <div class="oe-decorator"></div>
+      <span class="monday-indicator"></span>
+      <span class="description-decorator"></span>
+    `;
+    weekNumberNode = document.querySelector('.week-number');
+    oddOrEvenNode = document.querySelector('.odd-or-even');
+    mondayIndicatorNode = document.querySelector('.monday-indicator');
+    descriptionDecoratorNode = document.querySelector('.description-decorator');
+  });
+
+  test('Saturday shows next week number', () => {
+    main(SAT);
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+  });
+
+  test('Sunday shows next week number', () => {
+    main(SUN);
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+  });
+
+  test('Saturday shows capitalized odd/even with (Monday) in decorator', () => {
+    main(SAT);
+    expect(oddOrEvenNode.textContent).toEqual('Odd');
+  });
+
+  test('Sunday shows capitalized odd/even with (Monday) in decorator', () => {
+    main(SUN);
+    expect(oddOrEvenNode.textContent).toEqual('Odd');
+  });
+
+  test('Monday shows its own week without prefix or suffix', () => {
+    main(MON);
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+    expect(oddOrEvenNode.textContent).toEqual('odd');
+  });
+
+  test('parity advances correctly: Saturday before an even week shows Even', () => {
+    // 2026-01-12 (Mon) is school week 2 (even). Sat 2026-01-10 should show week 2 even.
+    main(new Date('2026-01-10T12:00:00+08:00'));
+    expect(weekNumberNode.textContent).toEqual('2️⃣');
+    expect(oddOrEvenNode.textContent).toEqual('Even');
+  });
+
+  test('term boundary: Saturday in break, next Monday starts new term', () => {
+    // Mon 2026-03-23 is Term 2 week 1 (odd). Sat 2026-03-21 should show same.
+    main(new Date('2026-03-21T12:00:00+08:00'));
+    expect(weekNumberNode.textContent).toEqual('1️⃣');
+    expect(oddOrEvenNode.textContent).toEqual('Odd');
+  });
+
+  test('Saturday sets monday-indicator to " (Monday)"', () => {
+    main(SAT);
+    expect(mondayIndicatorNode.textContent).toEqual(' (Monday)');
+  });
+
+  test('Monday monday-indicator is empty', () => {
+    main(MON);
+    expect(mondayIndicatorNode.textContent).toEqual('');
+  });
+
+  test('Saturday sets description-decorator to "Upcoming is"', () => {
+    main(SAT);
+    expect(descriptionDecoratorNode.textContent).toEqual('Upcoming is');
+  });
+
+  test('Sunday sets description-decorator to "Next week is"', () => {
+    main(SUN);
+    expect(descriptionDecoratorNode.textContent).toEqual('Upcoming is');
+  });
+
+  test('Monday sets description-decorator to "Today is"', () => {
+    main(MON);
+    expect(descriptionDecoratorNode.textContent).toEqual('Today is');
+  });
+});
+
 describe('kickoff', () => {
   test('visibilityState: visible', async () => {
     document.addEventListener = vi.fn((eventname, handler) => {
