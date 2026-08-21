@@ -42,7 +42,7 @@
     "test:e2e:install": "playwright install"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^9.36.0",
     "@playwright/test": "^1.55.1",
     "@vitest/coverage-v8": "^3.2.4",
