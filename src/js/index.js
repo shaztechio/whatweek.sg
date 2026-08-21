@@ -276,7 +276,9 @@ window.addEventListener('error', onError);
  */
 export function setupAddToHomeScreen() {
   posthog.init('phc_EFfe5zO3shj309xQC10LIp8f4Isnf7VVAIbSN7kNsjX', {
-    api_host: 'https://us.i.posthog.com',
+    api_host: 'https://t.shaztech.io', // managed reverse proxy domain
+    ui_host: 'https://us.posthog.com', // needed with a proxy, so links point back to PostHog
+    defaults: '2026-05-30',
     person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
   });
 
