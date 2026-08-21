@@ -6,12 +6,17 @@ See [Repository Guidelines](AGENTS.md) for contributor instructions.
 
 To add a new academic year, create `src/js/terms.YYYY.js` with the term data. The loader automatically uses the highest available year, so no extra wiring is needed.
 
-These files are in the `public` folder:
-
-- captain-definition
-- Dockerfile
-
 The PWA manifest is bundled at build time by `vite-plugin-pwa`.
+
+## Deploy
+
+The site is a static build hosted on GitHub Pages at <https://whatweek.sg>.
+
+- Every push to `main` runs `.github/workflows/deploy.yml`, which builds `dist/` and publishes it to Pages.
+- `public/CNAME` pins the custom domain; it is copied into `dist/` on every build, so do not delete it.
+- `public/.nojekyll` keeps Pages from running the output through Jekyll.
+- In the repo settings, **Pages → Build and deployment → Source** must be set to **GitHub Actions**.
+- DNS for the apex domain needs `A` records pointing at `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153` (plus a `www` `CNAME` to `shaztechio.github.io` if you want the `www` host).
 
 ## Dev
 
