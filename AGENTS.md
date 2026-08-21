@@ -9,7 +9,7 @@
 - Static shell files belong in `public/`.
 - `npm run build` outputs to `dist/`.
 - Mirror `test/` filenames to match `src/`.
-- Ignore generated artifacts such as `coverage/` and `caprover.tar`.
+- Ignore generated artifacts such as `coverage/` and `dist/`.
 
 ## Build, Test, and Development Commands
 
@@ -19,7 +19,7 @@
 - Surface ESLint issues with `npm run lint`.
 - Apply quick fixes using `npm run lint:fix`.
 - Run `npm run format` (Prettier) to align styles.
-- Deploy with `npm run caprover:deploy` after building the tarball.
+- Deploy happens automatically: pushing to `main` publishes `dist/` to GitHub Pages.
 
 ## Coding Style & Naming Conventions
 
@@ -40,6 +40,9 @@
 
 ## Commit & Pull Request Guidelines
 
+- **All changes must land through a pull request. Never commit or push directly to `main`.**
+- Start every change on a topic branch off the latest `main`.
+- Open a PR for the branch and let it merge to `main`; the Pages deploy runs on that merge.
 - Write imperative commit subjects (e.g., `Add term data for 2026`).
 - Reference issue IDs or PR numbers when relevant (e.g., `(#123)`).
 - Keep PRs focused with a summary and validation steps.

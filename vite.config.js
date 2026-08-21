@@ -13,6 +13,7 @@ export default defineConfig({
     setupFiles: ['test/vitest.setup.js'],
     exclude: ['tests/e2e/**'],
   },
+  base: '/',
   publicDir: 'public',
   root: './',
   build: {

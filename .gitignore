@@ -809,7 +809,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,eclipse,intellij,webstorm,node
 
-caprover.tar
 # Playwright artifacts
 test-results/
 playwright-report/
