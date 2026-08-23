@@ -94,7 +94,7 @@ export function alertDialog({
 }
 
 export function setupCopyEmail() {
-  const email = ['contact', 'whatweek.sg'].join('@');
+  const email = ['hello', 'whatweek.sg'].join('@');
   const btn = document.getElementById('copyEmail');
 
   if (!btn) {
