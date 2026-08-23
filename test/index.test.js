@@ -670,7 +670,7 @@ describe('setupCopyEmail', () => {
     const btn = document.getElementById('copyEmail');
     await btn.click();
 
-    expect(mockWriteText).toHaveBeenCalledWith('contact@whatweek.sg');
+    expect(mockWriteText).toHaveBeenCalledWith('hello@whatweek.sg');
 
     // Check that the dialog was created and shown
     const dialog = document.getElementById('alert-dialog');
@@ -695,9 +695,9 @@ describe('setupCopyEmail', () => {
     const btn = document.getElementById('copyEmail');
     await btn.click();
 
-    expect(mockWriteText).toHaveBeenCalledWith('contact@whatweek.sg');
+    expect(mockWriteText).toHaveBeenCalledWith('hello@whatweek.sg');
     expect(window.alert).toHaveBeenCalledWith(
-      'Copy failed — email is: contact@whatweek.sg',
+      'Copy failed — email is: hello@whatweek.sg',
     );
   });
 });
