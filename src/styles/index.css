@@ -52,6 +52,26 @@ a {
   margin: 0.5em;
 }
 
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #555;
+  border-radius: 50%;
+}
+
+.github-link:hover {
+  color: #111;
+  background-color: #f2f2f2;
+}
+
+.github-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .install-pwa {
   text-decoration: none;
   font-size: 1em;

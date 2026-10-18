@@ -4,7 +4,7 @@
   "main": "index.html",
   "type": "module",
   "author": "Shazron Abdullah",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "keywords": [
     "vanilla",
     "javascript",

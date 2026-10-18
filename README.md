@@ -38,3 +38,9 @@ The site is a static build hosted on GitHub Pages at <https://whatweek.sg>.
 ## Offline support
 
 The build pipeline ships a PWA service worker (via `vite-plugin-pwa`) that precaches core assets and serves the app offline. The cache updates automatically when a fresh build is deployed.
+
+## License
+
+Copyright 2026 Shazron Abdullah.
+
+Licensed under the [Apache License, Version 2.0](LICENSE). Third-party dependencies and assets retain their respective licenses.
